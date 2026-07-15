@@ -5,6 +5,29 @@ import { isSupabaseConfigured, supabaseConfig } from "@/lib/config";
 // Next.js 16 Proxy is Node-only. The deprecated middleware convention remains
 // intentionally here because OpenNext requires its session refresher at the edge.
 export async function middleware(request: NextRequest) {
+  const referralCode = request.nextUrl.searchParams.get("ref")?.trim();
+  if (
+    request.method === "GET" &&
+    referralCode &&
+    !request.nextUrl.pathname.startsWith("/api/") &&
+    !request.nextUrl.pathname.startsWith("/r/")
+  ) {
+    const cleanDestination = request.nextUrl.clone();
+    cleanDestination.searchParams.delete("ref");
+    if (/^[A-Za-z0-9_-]{10,32}$/.test(referralCode)) {
+      const captureUrl = new URL(
+        `/r/${encodeURIComponent(referralCode)}`,
+        request.url,
+      );
+      captureUrl.searchParams.set(
+        "next",
+        `${cleanDestination.pathname}${cleanDestination.search}`,
+      );
+      return NextResponse.redirect(captureUrl);
+    }
+    return NextResponse.redirect(cleanDestination);
+  }
+
   if (!isSupabaseConfigured || !supabaseConfig.url || !supabaseConfig.anonKey) {
     return NextResponse.next({ request });
   }

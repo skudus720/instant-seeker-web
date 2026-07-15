@@ -7,6 +7,7 @@ export const metadata: Metadata = { title: "Reset password" };
 export default function ForgotPasswordPage() {
   return (
     <AuthShell
+      mode="login"
       title="Reset your password"
       description="Enter your email. For privacy, the response is the same whether or not an account exists."
     >

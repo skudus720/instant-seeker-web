@@ -1,10 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #090909;
-  --signal: #ffd400;
-  --paper: #f4f5f0;
-  --mint: #82f6b3;
+  --ink: #000000;
+  --graphite: #1c1c1c;
+  --muted: #494949;
+  --signal: #ffca27;
+  --signal-ink: #765b00;
+  --signal-soft: #fff5cc;
+  --paper: #f3f3f3;
+  --success: #56ba0a;
+  --success-soft: #ebf8e1;
+  --alert: #ff3826;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-signal-soft: var(--signal-soft);
+  --color-paper: var(--paper);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-alert: var(--alert);
 }
 
 * {
@@ -18,8 +37,8 @@ html {
 
 body {
   margin: 0;
-  background: #ffffff;
-  color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
 }
@@ -61,7 +80,7 @@ a {
 }
 
 .section-kicker {
-  color: #776300;
+  color: var(--signal);
   font-size: 0.75rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -77,6 +96,61 @@ a {
   background-size: 44px 44px;
   mask-image: linear-gradient(to bottom, black, transparent 92%);
   pointer-events: none;
+}
+
+.dark-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 202, 39, 0.045), transparent 18rem),
+    var(--ink);
+  color: #ffffff;
+}
+
+.dark-section::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+  pointer-events: none;
+}
+
+.auth-surface::after {
+  position: absolute;
+  right: -12rem;
+  bottom: -18rem;
+  width: 42rem;
+  height: 42rem;
+  border: 1px solid rgba(255, 202, 39, 0.08);
+  border-radius: 50%;
+  content: "";
+  box-shadow:
+    0 0 0 5rem rgba(255, 202, 39, 0.018),
+    0 0 0 11rem rgba(255, 255, 255, 0.012);
+  pointer-events: none;
+}
+
+.auth-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(120deg, black, transparent 68%);
+}
+
+.auth-scan-line {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 28%;
+  height: 1px;
+  background: var(--signal);
+  box-shadow: 0 0 16px rgba(255, 202, 39, 0.55);
+  animation: auth-scan 5s ease-in-out infinite;
 }
 
 .ticket-scanner::after {
@@ -100,7 +174,7 @@ a {
   left: 0;
   height: 2px;
   background: var(--signal);
-  box-shadow: 0 0 18px 3px rgba(255, 212, 0, 0.4);
+  box-shadow: 0 0 18px 3px rgba(255, 202, 39, 0.4);
   animation: scan-ticket 4.2s ease-in-out infinite;
 }
 
@@ -111,7 +185,7 @@ a {
   height: 1.4rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 0.25rem;
-  background: rgba(9, 9, 9, 0.82);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(12px);
 }
 
@@ -122,7 +196,7 @@ a {
   width: 2px;
   height: 25%;
   background: var(--signal);
-  box-shadow: 0 0 16px rgba(255, 212, 0, 0.5);
+  box-shadow: 0 0 16px rgba(255, 202, 39, 0.5);
   animation: pipeline 4s linear infinite;
 }
 
@@ -140,7 +214,7 @@ a {
 .legal-copy p,
 .legal-copy li {
   margin-top: 0.8rem;
-  color: rgba(9, 9, 9, 0.62);
+  color: rgba(0, 0, 0, 0.62);
   font-size: 0.95rem;
   line-height: 1.75;
 }
@@ -158,6 +232,641 @@ a {
   text-underline-offset: 0.2rem;
 }
 
+.admin-app {
+  --admin-canvas: #f5f5f2;
+  --admin-panel: #ffffff;
+  --admin-line: rgba(0, 0, 0, 0.09);
+  --admin-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.035), 0 10px 32px rgba(0, 0, 0, 0.025);
+  background: var(--admin-canvas);
+}
+
+.admin-surface {
+  box-shadow: var(--admin-shadow);
+  transition:
+    border-color 180ms ease,
+    box-shadow 240ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  article.admin-surface:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 0, 0, 0.17);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 16px 38px rgba(0, 0, 0, 0.055);
+  }
+}
+
+.admin-interactive {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.admin-interactive:active {
+  transform: scale(0.97);
+}
+
+.admin-app :where(a, button, summary) {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-nav-item::before {
+  position: absolute;
+  top: 0.65rem;
+  bottom: 0.65rem;
+  left: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: transparent;
+  content: "";
+  transition:
+    background-color 160ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scaleY(0.4);
+}
+
+.admin-nav-active::before {
+  background: var(--signal);
+  transform: scaleY(1);
+}
+
+.admin-menu {
+  transform-origin: top right;
+  animation: admin-menu-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-dialog[open] {
+  animation: admin-dialog-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-dialog::backdrop {
+  backdrop-filter: blur(3px);
+  animation: admin-backdrop-in 180ms ease-out both;
+}
+
+.admin-notice {
+  animation: admin-notice-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-metric-grid > * {
+  animation: admin-card-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-metric-grid > :nth-child(2),
+.admin-metric-grid > :nth-child(6) {
+  animation-delay: 35ms;
+}
+
+.admin-metric-grid > :nth-child(3),
+.admin-metric-grid > :nth-child(7) {
+  animation-delay: 70ms;
+}
+
+.admin-metric-grid > :nth-child(4),
+.admin-metric-grid > :nth-child(8) {
+  animation-delay: 105ms;
+}
+
+.admin-list-row {
+  transition: background-color 160ms ease;
+}
+
+.admin-list-row:hover {
+  background: rgba(0, 0, 0, 0.022);
+}
+
+.admin-table-scroll {
+  scrollbar-color: rgba(0, 0, 0, 0.24) transparent;
+  scrollbar-width: thin;
+}
+
+.admin-table thead th {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background: #f7f7f4;
+}
+
+.admin-table tbody tr {
+  transition: background-color 150ms ease;
+}
+
+.admin-table tbody tr:hover,
+.admin-table tbody tr:focus-within {
+  background: rgba(0, 0, 0, 0.022);
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom-color: transparent;
+}
+
+.admin-empty-state {
+  background-image: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.018) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.018) 50%,
+    rgba(0, 0, 0, 0.018) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 24px 24px;
+}
+
+.admin-chart-grid {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 100% 25%;
+}
+
+.admin-chart-bar {
+  transform-origin: bottom;
+  animation: admin-bar-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-progress-fill {
+  height: 100%;
+  transform-origin: left;
+  animation: admin-progress-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.055) 20%,
+    rgba(0, 0, 0, 0.095) 50%,
+    rgba(0, 0, 0, 0.055) 80%
+  );
+  background-size: 240% 100%;
+  animation: admin-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.admin-sidebar-scroll {
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.admin-app input,
+.admin-app textarea,
+.admin-app select {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.admin-app input:hover,
+.admin-app textarea:hover,
+.admin-app select:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.sub-admin-shell main {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.sub-admin-dashboard {
+  scroll-behavior: smooth;
+}
+
+.sub-admin-dashboard main {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.sub-admin-dashboard nav {
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.virtuals-ai-page {
+  background: #080808;
+}
+
+.virtuals-ai-intro,
+.virtuals-ai-result {
+  animation: virtuals-ai-intro-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-mark {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 46px rgba(0, 0, 0, 0.35),
+    0 0 34px rgba(255, 202, 39, 0.06);
+}
+
+.virtuals-ai-subtitle {
+  text-shadow: 0 0 20px rgba(255, 202, 39, 0.18);
+}
+
+.virtuals-ai-attachment {
+  transform-origin: bottom center;
+  animation: virtuals-ai-attachment-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-processing {
+  animation: virtuals-ai-preview-lift 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-processing-preview {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 22px 62px rgba(0, 0, 0, 0.4),
+    0 0 38px rgba(255, 202, 39, 0.045);
+}
+
+.virtuals-ai-progress-fill {
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.virtuals-ai-status-line {
+  animation: virtuals-ai-status-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-result {
+  animation-name: virtuals-ai-result-in;
+  animation-duration: 620ms;
+}
+
+.virtuals-ai-team-list > li {
+  animation: virtuals-ai-row-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-team-list > :nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.virtuals-ai-team-list > :nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.virtuals-ai-team-list > :nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.virtuals-ai-team-list > :nth-child(5) {
+  animation-delay: 280ms;
+}
+
+.virtuals-ai-team-list > :nth-child(n + 6) {
+  animation-delay: 350ms;
+}
+
+.virtuals-ai-menu {
+  transform-origin: top left;
+  animation: admin-menu-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtuals-ai-composer {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 22px 70px rgba(0, 0, 0, 0.46);
+  transition:
+    border-color 180ms ease,
+    box-shadow 220ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.virtuals-ai-composer:focus-within {
+  border-color: rgba(255, 202, 39, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 24px 78px rgba(0, 0, 0, 0.5),
+    0 0 0 3px rgba(255, 202, 39, 0.055);
+}
+
+.referral-workspace {
+  position: relative;
+  isolation: isolate;
+}
+
+.referral-card,
+.referral-panel {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 18px 48px rgba(0, 0, 0, 0.18);
+}
+
+.referral-card {
+  animation: referral-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 240ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.referral-link-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 0 0 1px rgba(255, 202, 39, 0.025),
+    0 22px 58px rgba(0, 0, 0, 0.22);
+}
+
+.referral-panel {
+  transition:
+    border-color 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.referral-entrance,
+.referral-section-enter,
+.referral-empty {
+  animation: referral-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.referral-delay-1 {
+  animation-delay: 70ms;
+}
+
+.referral-delay-2 > .referral-card {
+  animation-delay: 125ms;
+}
+
+.referral-metric-grid > :nth-child(2),
+.referral-metric-grid > :nth-child(5) {
+  animation-delay: 45ms;
+}
+
+.referral-metric-grid > :nth-child(3),
+.referral-metric-grid > :nth-child(6) {
+  animation-delay: 90ms;
+}
+
+.referral-metric-grid > :nth-child(4),
+.referral-metric-grid > :nth-child(7) {
+  animation-delay: 135ms;
+}
+
+.referral-metric-grid > :nth-child(8) {
+  animation-delay: 180ms;
+}
+
+.referral-interactive {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.referral-interactive:active:not(:disabled) {
+  transform: scale(0.975);
+}
+
+.referral-control {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.referral-control:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.referral-table-row,
+.referral-mobile-row {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.referral-table-row:hover,
+.referral-table-row:focus-within,
+.referral-mobile-row:hover,
+.referral-mobile-row:focus-within {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.referral-notice {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 202, 39, 0.045),
+    0 14px 36px rgba(0, 0, 0, 0.14);
+}
+
+.referral-empty {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.015) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.015) 50%,
+    rgba(255, 255, 255, 0.015) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 24px 24px;
+}
+
+@media (hover: hover) {
+  .referral-card-dark:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.17);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 24px 58px rgba(0, 0, 0, 0.24);
+  }
+
+  .referral-card-light:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 18px 42px rgba(0, 0, 0, 0.08);
+  }
+
+  .referral-interactive:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .referral-panel:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+}
+
+@keyframes admin-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes admin-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes admin-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-bar-reveal {
+  from {
+    opacity: 0.35;
+    transform: scaleY(0.05);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes admin-progress-reveal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes admin-skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes referral-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes virtuals-ai-intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes virtuals-ai-attachment-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes virtuals-ai-preview-lift {
+  from {
+    opacity: 0;
+    transform: translateY(72px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes virtuals-ai-status-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes virtuals-ai-result-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(18px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes virtuals-ai-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes scan-ticket {
   0%,
   100% {
@@ -170,12 +879,33 @@ a {
   }
 }
 
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @keyframes pipeline {
   from {
     transform: translateY(0);
   }
   to {
     transform: translateY(300%);
+  }
+}
+
+@keyframes auth-scan {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(258%);
+    opacity: 1;
   }
 }
 

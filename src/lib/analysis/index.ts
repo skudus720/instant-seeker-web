@@ -2,10 +2,21 @@ import "server-only";
 
 import type { AnalysisProvider } from "@/lib/analysis/provider";
 import { DemoAnalysisProvider } from "@/lib/analysis/demo-provider";
+import { RemoteHttpAnalysisProvider } from "@/lib/analysis/remote-http-provider";
+import { analysisProviderConfig } from "@/lib/config";
 
 export function getAnalysisProvider(): AnalysisProvider {
-  // Add a server-only adapter here when an approved vision model is selected.
-  // The adapter must return the shared typed schema and must never expose keys.
+  if (
+    analysisProviderConfig.provider === "remote-http" &&
+    analysisProviderConfig.endpoint &&
+    analysisProviderConfig.apiKey
+  ) {
+    return new RemoteHttpAnalysisProvider(
+      analysisProviderConfig.endpoint,
+      analysisProviderConfig.apiKey,
+    );
+  }
+
   return new DemoAnalysisProvider();
 }
 

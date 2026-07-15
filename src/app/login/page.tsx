@@ -11,13 +11,21 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; payment?: string }>;
 }) {
   const params = await searchParams;
   return (
     <AuthShell
+      mode="login"
       title="Welcome back"
-      description="Log in to upload a new screenshot or review your private analysis history."
+      description="Log in to access your private reports and continue your screenshot analysis workflow."
+      notice={
+        params.payment === "success"
+          ? "Payment confirmed. Confirm your email if requested, then log in to continue."
+          : params.payment === "failed"
+            ? "We could not verify that payment. No access change was made; log in to retry securely."
+            : undefined
+      }
     >
       <AuthForm mode="login" redirectTo={sanitizeRedirect(params.next)} />
     </AuthShell>

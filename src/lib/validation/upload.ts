@@ -28,3 +28,39 @@ export function validateUploadMetadata(metadata: {
 export const allowedDetectedMimeTypes = new Set<string>(
   appConfig.supportedImageTypes,
 );
+
+export const riskPreferenceOptions = [
+  "conservative",
+  "balanced",
+  "opportunistic",
+] as const;
+
+function normalizeVisibleFixtureNotes(value: string | undefined) {
+  const normalized = value
+    ?.replace(/\r\n/g, "\n")
+    .split("\n")
+    .map((line) => line.trim().replace(/[ \t]+/g, " "))
+    .filter(Boolean)
+    .join("\n");
+  return normalized ? normalized : undefined;
+}
+
+export const analysisSettingsSchema = z.object({
+  riskPreference: z.enum(riskPreferenceOptions).default("balanced"),
+  responseMode: z.enum(["full", "team-selections"]).default("full"),
+  visibleFixtureNotes: z
+    .string()
+    .max(1_200, "Visible fixture notes must be 1,200 characters or fewer.")
+    .optional()
+    .transform(normalizeVisibleFixtureNotes),
+});
+
+export type ValidatedAnalysisSettings = z.infer<typeof analysisSettingsSchema>;
+
+export function validateAnalysisSettings(settings: {
+  riskPreference?: string;
+  responseMode?: string;
+  visibleFixtureNotes?: string;
+}) {
+  return analysisSettingsSchema.safeParse(settings);
+}

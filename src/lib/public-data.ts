@@ -1,33 +1,38 @@
 import "server-only";
 
 import { appConfig, isDemoMode } from "@/lib/config";
-import { selectDailyReviews } from "@/lib/reviews";
+import { getShowcaseReviews, selectRotatingReviews } from "@/lib/reviews";
+import { getGrowingShowcaseStats } from "@/lib/stats";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { PublicReview, PublicStats, PublicWin } from "@/lib/types";
 
-const emptyStats: PublicStats = {
-  verifiedWinners: 0,
-  totalVerifiedAmountWon: 0,
-  screenshotsAnalyzed: 0,
-  averagePublishedRating: null,
-  currency: appConfig.currency,
-  demo: true,
-};
+export type PublishedContentMap = Record<string, Record<string, unknown>>;
 
 export async function getPublicStats(): Promise<PublicStats> {
+  const showcase = getGrowingShowcaseStats(new Date(), appConfig.currency);
   const supabase = await createServerSupabaseClient();
-  if (!supabase || isDemoMode) return emptyStats;
+  if (!supabase || isDemoMode) return showcase;
 
   const { data, error } = await supabase.rpc("get_public_stats", {
     requested_currency: appConfig.currency,
   });
-  if (error || !data) return { ...emptyStats, demo: false };
+  if (error || !data) return showcase;
 
   const value = Array.isArray(data) ? data[0] : data;
+  const verifiedWinners = Number(value.verified_winners || 0);
+  const totalVerifiedAmountWon = Number(value.total_verified_amount_won || 0);
+  const screenshotsAnalyzed = Number(value.screenshots_analyzed || 0);
+  const hasLiveActivity =
+    verifiedWinners > 0 ||
+    totalVerifiedAmountWon > 0 ||
+    screenshotsAnalyzed > 0;
+
+  if (!hasLiveActivity) return showcase;
+
   return {
-    verifiedWinners: Number(value.verified_winners || 0),
-    totalVerifiedAmountWon: Number(value.total_verified_amount_won || 0),
-    screenshotsAnalyzed: Number(value.screenshots_analyzed || 0),
+    verifiedWinners,
+    totalVerifiedAmountWon,
+    screenshotsAnalyzed,
     averagePublishedRating:
       value.average_published_rating == null
         ? null
@@ -66,10 +71,10 @@ export async function getDailyPublicReviews(
   date = new Date(),
 ): Promise<PublicReview[]> {
   const supabase = await createServerSupabaseClient();
-  if (!supabase || isDemoMode) return [];
+  if (!supabase || isDemoMode) return getShowcaseReviews(date);
 
   const { data, error } = await supabase.rpc("get_public_reviews");
-  if (error || !data) return [];
+  if (error || !data) return getShowcaseReviews(date);
 
   const reviews: PublicReview[] = data.map(
     (review: Record<string, unknown>) => ({
@@ -82,5 +87,27 @@ export async function getDailyPublicReviews(
       moderationStatus: "approved",
     }),
   );
-  return selectDailyReviews(reviews, date, 6);
+  const rotating = selectRotatingReviews(reviews, date, 12);
+  return rotating.length > 0 ? rotating : getShowcaseReviews(date);
+}
+
+export async function getPublishedContent(): Promise<PublishedContentMap> {
+  const supabase = await createServerSupabaseClient();
+  if (!supabase || isDemoMode) return {};
+  const { data, error } = await supabase.rpc("get_public_content");
+  if (error || !data) return {};
+  return Object.fromEntries(
+    data
+      .filter(
+        (entry: Record<string, unknown>) =>
+          typeof entry.content_key === "string" &&
+          entry.content &&
+          typeof entry.content === "object" &&
+          !Array.isArray(entry.content),
+      )
+      .map((entry: Record<string, unknown>) => [
+        String(entry.content_key),
+        entry.content as Record<string, unknown>,
+      ]),
+  );
 }

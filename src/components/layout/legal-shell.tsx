@@ -17,9 +17,9 @@ export function LegalShell({
     <>
       <Header />
       <main id="main-content">
-        <header className="bg-[#090909] px-5 py-16 text-white sm:px-8 sm:py-20">
+        <header className="bg-ink px-5 py-16 text-white sm:px-8 sm:py-20">
           <div className="mx-auto max-w-4xl">
-            <p className="text-xs font-black text-[#ffd400] uppercase">
+            <p className="text-xs font-black text-signal uppercase">
               {eyebrow}
             </p>
             <h1 className="mt-4 text-4xl font-black sm:text-6xl">{title}</h1>

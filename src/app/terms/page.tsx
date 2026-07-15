@@ -50,6 +50,14 @@ export default function TermsPage() {
         suspect unauthorized access. The service may suspend access needed to
         protect users, records, or legal compliance.
       </p>
+      <h2>Payments and AI access plans</h2>
+      <p>
+        The account fee activates membership. AI access plans are separate
+        one-time purchases that remain available only for their stated duration
+        and do not renew automatically. Buying another plan while access remains
+        adds its duration after the current window. All fees pay for software
+        access only and are not bets, stakes, deposits, or promises of winnings.
+      </p>
       <h2>Responsible use</h2>
       <p>
         Never rely on Instant Seeker as a source of income. Set spending limits,

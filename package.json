@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "purge:analysis-images": "node scripts/purge-analysis-screenshots.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

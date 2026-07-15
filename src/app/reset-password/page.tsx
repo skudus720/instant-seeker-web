@@ -7,6 +7,7 @@ export const metadata: Metadata = { title: "Choose a new password" };
 export default function ResetPasswordPage() {
   return (
     <AuthShell
+      mode="login"
       title="Choose a new password"
       description="Use at least eight characters with uppercase, lowercase, and a number."
     >

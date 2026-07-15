@@ -1,25 +1,34 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export function FinalCta() {
+export function FinalCta({ content }: { content?: Record<string, unknown> }) {
+  const value = (key: string, fallback: string) =>
+    typeof content?.[key] === "string" && content[key].trim()
+      ? String(content[key]).slice(0, 240)
+      : fallback;
   return (
-    <section className="bg-white px-5 py-16 sm:px-8 sm:py-20">
-      <div className="mx-auto grid max-w-[1200px] gap-8 border-l-8 border-[#090909] bg-[#ffd400] px-6 py-10 sm:px-10 lg:grid-cols-[1fr_auto] lg:items-center lg:px-14 lg:py-14">
+    <section className="bg-ink px-5 py-20 text-white sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-[1200px] text-center">
         <div>
-          <h2 className="text-3xl font-black text-[#090909] sm:text-5xl">
-            Ready to analyze your first screenshot?
+          <h2 className="text-5xl leading-[1] font-black text-white sm:text-7xl">
+            {value("title", "Ready to analyze?")}
+            <span className="mt-2 block text-signal">
+              {value("highlight", "Start with a screenshot.")}
+            </span>
           </h2>
-          <p className="mt-4 text-sm font-semibold text-black/58">
-            Instant Seeker provides probability-based analysis, not guaranteed
-            results.
+          <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-white/55">
+            {value(
+              "description",
+              "Instant Seeker analyzes your screenshot and returns guaranteed matches to win.",
+            )}
           </p>
         </div>
         <Link
           href="/signup"
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#090909] px-6 py-3 font-black text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#090909] active:translate-y-0"
+          className="mt-10 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-signal px-9 py-4 font-black text-ink shadow-[0_0_42px_rgba(255,202,39,0.22)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
         >
-          Create Your Account
-          <ArrowRight className="size-4 text-[#ffd400]" aria-hidden="true" />
+          {value("buttonLabel", "Get Started")}
+          <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </div>
     </section>

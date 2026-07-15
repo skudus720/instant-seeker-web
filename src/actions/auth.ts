@@ -2,8 +2,22 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { isDemoMode, siteUrl } from "@/lib/config";
+import {
+  appConfig,
+  isDemoMode,
+  isPaymentConfigured,
+  siteUrl,
+} from "@/lib/config";
+import { isStaffRole, isSubAdminRole } from "@/lib/admin/permissions";
+import {
+  authenticateLocalSubAdmin,
+  clearLocalSubAdminSession,
+  createLocalSubAdminSession,
+  isLocalSubAdminLogin,
+} from "@/lib/local-sub-admin-preview";
+import { createAndRecordSignupCheckout } from "@/lib/payments/service";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { sanitizeRedirect } from "@/lib/utils";
 import {
@@ -11,6 +25,7 @@ import {
   loginSchema,
   resetPasswordSchema,
   signupSchema,
+  normalizeGhanaMomoNumber,
 } from "@/lib/validation/auth";
 
 export interface AuthActionResult {
@@ -18,6 +33,7 @@ export interface AuthActionResult {
   message: string;
   fieldErrors?: Record<string, string[]>;
   redirectTo?: string;
+  checkoutUrl?: string;
 }
 
 function invalidResult(
@@ -54,8 +70,16 @@ export async function signupAction(input: unknown): Promise<AuthActionResult> {
     return {
       ok: true,
       message:
-        "Demo mode: your details were validated but no account was stored.",
+        "Demo mode: your details were validated. No account was stored and no payment was collected.",
       redirectTo: "/dashboard",
+    };
+  }
+
+  const admin = createAdminSupabaseClient();
+  if (!isPaymentConfigured || !admin) {
+    return {
+      ok: false,
+      message: `Secure checkout for the ${appConfig.signupFeeCurrency} ${appConfig.signupFeeAmount.toFixed(2)} access fee is temporarily unavailable. No account was created and no charge was made.`,
     };
   }
 
@@ -68,20 +92,26 @@ export async function signupAction(input: unknown): Promise<AuthActionResult> {
   }
 
   const origin = await requestOrigin();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
+      emailRedirectTo: `${origin}/auth/callback?next=/payment-required`,
       data: {
         display_name: parsed.data.displayName,
+        momo_number: normalizeGhanaMomoNumber(parsed.data.momoNumber),
         age_confirmed: true,
         terms_accepted: true,
+        fee_accepted: true,
       },
     },
   });
 
-  if (error) {
+  if (
+    error ||
+    !data.user ||
+    (Array.isArray(data.user.identities) && data.user.identities.length === 0)
+  ) {
     return {
       ok: false,
       message:
@@ -89,10 +119,25 @@ export async function signupAction(input: unknown): Promise<AuthActionResult> {
     };
   }
 
-  return {
-    ok: true,
-    message: "Check your email to confirm your account, then sign in.",
-  };
+  try {
+    const checkout = await createAndRecordSignupCheckout({
+      userId: data.user.id,
+      email: parsed.data.email,
+      origin,
+    });
+    return {
+      ok: true,
+      message: "Account details accepted. Opening secure checkout.",
+      checkoutUrl: checkout.authorizationUrl,
+    };
+  } catch {
+    await admin.auth.admin.deleteUser(data.user.id).catch(() => undefined);
+    return {
+      ok: false,
+      message:
+        "Secure checkout could not be started. No charge was made. Please try again.",
+    };
+  }
 }
 
 export async function loginAction(input: unknown): Promise<AuthActionResult> {
@@ -107,6 +152,26 @@ export async function loginAction(input: unknown): Promise<AuthActionResult> {
   if (!parsed.success) return invalidResult(parsed.error.flatten().fieldErrors);
   const redirectTo = sanitizeRedirect(parsed.data.redirectTo);
 
+  if (isLocalSubAdminLogin(parsed.data.identifier)) {
+    if (
+      !authenticateLocalSubAdmin(
+        parsed.data.identifier,
+        parsed.data.password,
+      ) ||
+      !(await createLocalSubAdminSession())
+    ) {
+      return {
+        ok: false,
+        message: "We could not sign you in with those details.",
+      };
+    }
+    return {
+      ok: true,
+      message: "Signed in to the local sub-admin test account.",
+      redirectTo: "/referrals",
+    };
+  }
+
   if (isDemoMode) {
     return {
       ok: true,
@@ -115,20 +180,117 @@ export async function loginAction(input: unknown): Promise<AuthActionResult> {
     };
   }
 
+  if (!parsed.data.identifier.includes("@")) {
+    return {
+      ok: false,
+      message: "We could not sign you in with those details.",
+    };
+  }
+
   const supabase = await createServerSupabaseClient();
   if (!supabase) {
     return { ok: false, message: "Sign-in is temporarily unavailable." };
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
-  if (error) {
+  let signInError: { message?: string } | null = null;
+  try {
+    const result = await supabase.auth.signInWithPassword({
+      email: parsed.data.identifier,
+      password: parsed.data.password,
+    });
+    signInError = result.error;
+  } catch (reason) {
+    const detail =
+      reason instanceof Error ? reason.message.toLowerCase() : "fetch failed";
+    if (detail.includes("fetch") || detail.includes("network")) {
+      return {
+        ok: false,
+        message:
+          "Sign-in could not reach the database service. Check Supabase URL/keys and Hostinger outbound network, then try again.",
+      };
+    }
     return {
       ok: false,
       message: "We could not sign you in with those details.",
     };
+  }
+  if (signInError) {
+    const detail = signInError.message?.toLowerCase() || "";
+    if (
+      detail.includes("fetch") ||
+      detail.includes("network") ||
+      detail.includes("failed to fetch")
+    ) {
+      return {
+        ok: false,
+        message:
+          "Sign-in could not reach the database service. Check Supabase URL/keys and Hostinger outbound network, then try again.",
+      };
+    }
+    return {
+      ok: false,
+      message: "We could not sign you in with those details.",
+    };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, access_status")
+      .eq("id", user.id)
+      .maybeSingle();
+    const profileRole =
+      profile?.role === "super_admin"
+        ? "super_admin"
+        : profile?.role === "admin"
+          ? "admin"
+          : profile?.role === "sub_admin"
+            ? "sub_admin"
+            : "user";
+    if (isSubAdminRole(profileRole)) {
+      return {
+        ok: true,
+        message: "Signed in securely.",
+        redirectTo: "/referrals",
+      };
+    }
+    if (
+      !isStaffRole(profileRole) &&
+      !isSubAdminRole(profileRole) &&
+      profile?.access_status !== "active"
+    ) {
+      return {
+        ok: true,
+        message: "Sign-in successful. Complete the access payment to continue.",
+        redirectTo: "/payment-required",
+      };
+    }
+    if (
+      !isStaffRole(profileRole) &&
+      !isSubAdminRole(profileRole) &&
+      redirectTo === "/dashboard"
+    ) {
+      const now = new Date().toISOString();
+      const { data: subscription } = await supabase
+        .from("ai_subscriptions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .lte("starts_at", now)
+        .gt("expires_at", now)
+        .limit(1)
+        .maybeSingle();
+      if (!subscription) {
+        return {
+          ok: true,
+          message: "Signed in securely. Choose an AI access plan to continue.",
+          redirectTo: "/plans",
+        };
+      }
+    }
   }
 
   return { ok: true, message: "Signed in securely.", redirectTo };
@@ -163,6 +325,7 @@ export async function forgotPasswordAction(
 }
 
 export async function signOutAction() {
+  await clearLocalSubAdminSession();
   if (!isDemoMode) {
     const supabase = await createServerSupabaseClient();
     await supabase?.auth.signOut();

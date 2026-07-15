@@ -60,7 +60,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#090909]/88 text-white backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/88 text-white backdrop-blur-xl">
       <div className="mx-auto flex h-18 max-w-[1200px] items-center justify-between px-5 sm:px-8">
         <Logo inverse />
         <nav
@@ -71,30 +71,30 @@ export function Header() {
             <Link
               key={item.label}
               href={item.href}
-              className="rounded-sm text-sm font-semibold text-white/70 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffd400]"
+              className="rounded-sm text-sm font-semibold text-white/70 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 sm:flex">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/login"
-            className="rounded-md px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffd400]"
+            className="rounded-full border border-white/15 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal sm:px-4 sm:py-2.5"
           >
             Login
           </Link>
           <Link
             href="/signup"
-            className="rounded-md bg-[#ffd400] px-5 py-2.5 text-sm font-black text-[#090909] shadow-[0_0_24px_rgba(255,212,0,0.16)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-white active:translate-y-0"
+            className="rounded-full bg-signal px-4 py-2 text-sm font-black text-ink shadow-[0_0_24px_rgba(255,202,39,0.16)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-white active:translate-y-0 sm:px-5 sm:py-2.5"
           >
-            Get Started
+            Sign Up
           </Link>
         </div>
         <button
           ref={triggerRef}
           type="button"
-          className="grid size-11 place-items-center rounded-md border border-white/15 text-white sm:hidden"
+          className="hidden size-11 place-items-center rounded-full border border-white/15 text-white md:grid lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Close navigation" : "Open navigation"}
@@ -111,7 +111,7 @@ export function Header() {
           aria-modal="true"
           aria-label="Mobile navigation"
           onKeyDown={trapFocus}
-          className="fixed inset-x-0 top-18 min-h-[calc(100dvh-4.5rem)] border-t border-white/10 bg-[#090909] px-5 py-8 sm:hidden"
+          className="fixed inset-x-0 top-18 min-h-[calc(100dvh-4.5rem)] border-t border-white/10 bg-ink px-5 py-8 lg:hidden"
         >
           <nav className="grid gap-2" aria-label="Mobile navigation">
             {navigation.map((item) => (
@@ -134,7 +134,7 @@ export function Header() {
             <Link
               href="/signup"
               onClick={() => setOpen(false)}
-              className="rounded-md bg-[#ffd400] px-5 py-3.5 text-center font-black text-[#090909]"
+              className="rounded-md bg-signal px-5 py-3.5 text-center font-black text-ink"
             >
               Get Started
             </Link>

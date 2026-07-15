@@ -6,17 +6,17 @@ export default function NotFound() {
   return (
     <main
       id="main-content"
-      className="grid min-h-screen place-items-center bg-[#090909] px-5 text-white"
+      className="grid min-h-screen place-items-center bg-ink px-5 text-white"
     >
       <div className="w-full max-w-xl text-center">
         <div className="flex justify-center">
           <Logo inverse />
         </div>
         <SearchX
-          className="mx-auto mt-14 size-10 text-[#ffd400]"
+          className="mx-auto mt-14 size-10 text-signal"
           aria-hidden="true"
         />
-        <p className="mt-6 text-sm font-black text-[#ffd400]">404</p>
+        <p className="mt-6 text-sm font-black text-signal">404</p>
         <h1 className="mt-3 text-4xl font-black sm:text-6xl">
           This page is out of frame.
         </h1>
@@ -25,7 +25,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="mx-auto mt-9 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#ffd400] px-6 py-3 font-black text-[#090909] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          className="mx-auto mt-9 inline-flex min-h-12 items-center gap-2 rounded-md bg-signal px-6 py-3 font-black text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           Back home

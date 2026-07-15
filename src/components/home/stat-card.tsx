@@ -54,14 +54,14 @@ export function StatCard({
       className={cn(
         "min-h-36 border-t-2 p-5 sm:p-6",
         accent
-          ? "border-[#ffd400] bg-[#090909] text-white"
-          : "border-black bg-white text-[#090909]",
+          ? "border-signal bg-signal text-ink"
+          : "border-white/10 bg-white/[0.045] text-white",
       )}
     >
       <p
         className={cn(
           "text-xs font-bold uppercase",
-          accent ? "text-white/46" : "text-black/45",
+          accent ? "text-black/55" : "text-white/45",
         )}
       >
         {label}

@@ -2,17 +2,30 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { appConfig } from "@/lib/config";
 
-export function Footer() {
+export function Footer({
+  content,
+  supportContent,
+}: {
+  content?: Record<string, unknown>;
+  supportContent?: Record<string, unknown>;
+}) {
+  const description =
+    typeof content?.description === "string" && content.description.trim()
+      ? content.description.slice(0, 500)
+      : "Independent screenshot analysis that returns guaranteed matches to win. Instant Seeker does not accept bets or handle gambling funds.";
+  const contactEmail =
+    typeof supportContent?.email === "string" &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supportContent.email)
+      ? supportContent.email
+      : appConfig.contactEmail;
   return (
-    <footer className="border-t border-white/10 bg-[#090909] text-white">
+    <footer className="border-t border-white/10 bg-ink text-white">
       <div className="mx-auto max-w-[1200px] px-5 py-12 sm:px-8 lg:py-16">
         <div className="grid gap-10 border-b border-white/10 pb-10 md:grid-cols-[1.3fr_1fr_1fr]">
           <div>
             <Logo inverse />
             <p className="mt-5 max-w-md text-sm leading-6 text-white/55">
-              Independent screenshot analysis for clearer probability,
-              confidence, and risk context. Instant Seeker does not accept bets
-              or handle gambling funds.
+              {description}
             </p>
           </div>
           <nav
@@ -54,22 +67,16 @@ export function Footer() {
               Responsible Gaming
             </Link>
             <a
-              href={`mailto:${appConfig.contactEmail}`}
+              href={`mailto:${contactEmail}`}
               className="text-white/58 hover:text-white"
             >
               Contact
             </a>
           </nav>
         </div>
-        <div className="flex flex-col gap-5 pt-8 text-xs leading-5 text-white/48 md:flex-row md:items-start md:justify-between">
-          <p className="max-w-3xl">
-            Instant Seeker is an independent service and is not affiliated with
-            or endorsed by SportyBet or any other betting platform. References
-            to third-party platforms are instructional only. Probability
-            estimates are not guarantees.
-          </p>
+        <div className="flex flex-col gap-5 pt-8 text-xs leading-5 text-white/48 sm:flex-row sm:items-center sm:justify-end">
           <div className="flex shrink-0 items-center gap-3">
-            <span className="rounded-full border border-[#ffd400] px-2.5 py-1 font-black text-[#ffd400]">
+            <span className="rounded-full border border-signal px-2.5 py-1 font-black text-signal">
               18+
             </span>
             <span>&copy; {new Date().getFullYear()} Instant Seeker</span>

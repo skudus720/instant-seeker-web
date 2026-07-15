@@ -2,48 +2,53 @@
 
 import {
   AlertCircle,
+  ClipboardList,
   ImagePlus,
   LoaderCircle,
   Replace,
+  ShieldCheck,
+  SlidersHorizontal,
   Trash2,
   UploadCloud,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AnalysisResultCard } from "@/components/analysis/analysis-result-card";
-import type { AnalysisResult } from "@/lib/types";
+import { normalizeForTransientAnalysis } from "@/lib/analysis/client-image";
+import type { AnalysisResult, RiskPreference } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { validateUploadMetadata } from "@/lib/validation/upload";
 
 type Stage =
-  "idle" | "ready" | "uploading" | "analyzing" | "complete" | "error";
+  "idle" | "ready" | "preparing" | "analyzing" | "complete" | "error";
 
-async function normalizeForPrivateUpload(file: File): Promise<File> {
-  if (typeof createImageBitmap !== "function") return file;
-  const bitmap = await createImageBitmap(file);
-  try {
-    const scale = Math.min(1, 2_000 / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    const context = canvas.getContext("2d", { alpha: false });
-    if (!context) return file;
-    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, "image/webp", 0.86),
-    );
-    if (!blob) return file;
-    const baseName = file.name.replace(/\.[^.]+$/, "") || "screenshot";
-    return new File([blob], `${baseName}.webp`, {
-      type: "image/webp",
-      lastModified: Date.now(),
-    });
-  } finally {
-    bitmap.close();
-  }
-}
+const riskOptions: Array<{
+  value: RiskPreference;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "conservative",
+    label: "Conservative",
+    description: "Favor steadier signals",
+  },
+  {
+    value: "balanced",
+    label: "Balanced",
+    description: "Mix signal and caution",
+  },
+  {
+    value: "opportunistic",
+    label: "Opportunistic",
+    description: "Review wider variance",
+  },
+];
 
-export function ScreenshotUploader() {
+export function ScreenshotUploader({
+  demoMode = false,
+}: {
+  demoMode?: boolean;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -51,6 +56,9 @@ export function ScreenshotUploader() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [riskPreference, setRiskPreference] =
+    useState<RiskPreference>("balanced");
+  const [visibleFixtureNotes, setVisibleFixtureNotes] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -97,18 +105,22 @@ export function ScreenshotUploader() {
     if (!file) return;
     setError(null);
     setResult(null);
-    setStage("uploading");
+    setStage("preparing");
     setProgress(12);
     const timer = window.setInterval(
       () => setProgress((value) => Math.min(value + 4, 68)),
       250,
     );
     try {
-      const uploadFile = await normalizeForPrivateUpload(file).catch(
+      const uploadFile = await normalizeForTransientAnalysis(file).catch(
         () => file,
       );
       const formData = new FormData();
       formData.append("screenshot", uploadFile);
+      formData.append("riskPreference", riskPreference);
+      if (visibleFixtureNotes.trim()) {
+        formData.append("visibleFixtureNotes", visibleFixtureNotes);
+      }
       setStage("analyzing");
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -122,6 +134,10 @@ export function ScreenshotUploader() {
         throw new Error(payload.error || "Analysis failed.");
       setProgress(100);
       setResult(payload.result);
+      if (preview) URL.revokeObjectURL(preview);
+      setFile(null);
+      setPreview(null);
+      if (inputRef.current) inputRef.current.value = "";
       setStage("complete");
       window.setTimeout(() => resultRef.current?.focus(), 50);
     } catch (reason) {
@@ -136,13 +152,13 @@ export function ScreenshotUploader() {
     }
   };
 
-  const busy = stage === "uploading" || stage === "analyzing";
+  const busy = stage === "preparing" || stage === "analyzing";
   return (
     <div>
       <div
         className={cn(
           "relative overflow-hidden rounded-lg border-2 border-dashed bg-white transition-colors",
-          dragging ? "border-[#b89500] bg-[#fff9d9]" : "border-black/18",
+          dragging ? "border-signal-ink bg-signal-soft" : "border-black/18",
           busy && "pointer-events-none opacity-75",
         )}
         onDragEnter={(event) => {
@@ -170,7 +186,7 @@ export function ScreenshotUploader() {
         />
         {preview && file ? (
           <div className="grid md:grid-cols-[0.85fr_1.15fr]">
-            <div className="relative min-h-72 border-b border-black/10 bg-[#111] md:border-r md:border-b-0">
+            <div className="relative min-h-72 border-b border-black/10 bg-graphite md:border-r md:border-b-0">
               <Image
                 src={preview}
                 alt="Selected virtual-match screenshot preview"
@@ -185,27 +201,97 @@ export function ScreenshotUploader() {
                 <p className="text-xs font-black text-black/42 uppercase">
                   Ready to analyze
                 </p>
-                <p className="mt-3 font-black break-all text-[#090909]">
+                <p className="mt-3 font-black break-all text-ink">
                   {file.name}
                 </p>
                 <p className="mt-2 text-sm text-black/48">
                   {(file.size / 1024 / 1024).toFixed(2)} MB ·{" "}
                   {file.type.replace("image/", "").toUpperCase()}
                 </p>
+                <div className="mt-6 grid gap-5">
+                  <fieldset disabled={busy}>
+                    <legend className="flex items-center gap-2 text-xs font-black text-black/52 uppercase">
+                      <SlidersHorizontal
+                        className="size-4"
+                        aria-hidden="true"
+                      />
+                      Analysis posture
+                    </legend>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                      {riskOptions.map((option) => (
+                        <label
+                          key={option.value}
+                          className={cn(
+                            "min-h-20 cursor-pointer rounded-md border p-3 transition-colors",
+                            riskPreference === option.value
+                              ? "border-signal-ink bg-signal-soft text-ink"
+                              : "border-black/12 bg-white text-black/58 hover:border-black/35",
+                          )}
+                        >
+                          <input
+                            className="sr-only"
+                            type="radio"
+                            name="riskPreference"
+                            value={option.value}
+                            checked={riskPreference === option.value}
+                            onChange={() => setRiskPreference(option.value)}
+                          />
+                          <span className="block text-sm font-black">
+                            {option.label}
+                          </span>
+                          <span className="mt-1 block text-xs leading-4">
+                            {option.description}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <div>
+                    <label
+                      htmlFor="visible-fixture-notes"
+                      className="flex items-center gap-2 text-xs font-black text-black/52 uppercase"
+                    >
+                      <ClipboardList className="size-4" aria-hidden="true" />
+                      Visible fixture notes
+                    </label>
+                    <textarea
+                      id="visible-fixture-notes"
+                      value={visibleFixtureNotes}
+                      onChange={(event) =>
+                        setVisibleFixtureNotes(event.target.value)
+                      }
+                      maxLength={1200}
+                      rows={3}
+                      disabled={busy}
+                      placeholder="Optional: add visible team names or market labels from the screenshot."
+                      aria-describedby="visible-fixture-notes-help"
+                      className="mt-3 w-full resize-y rounded-md border border-black/14 bg-white px-3 py-3 text-sm leading-6 text-ink placeholder:text-black/35 focus:border-signal-ink focus:outline-2 focus:outline-offset-2 focus:outline-signal"
+                    />
+                    <p
+                      id="visible-fixture-notes-help"
+                      className="mt-2 text-xs leading-5 text-black/45"
+                    >
+                      {demoMode
+                        ? "Demo mode treats these as user-provided context and still does not read the screenshot."
+                        : "Only include match text visible in the screenshot; do not include personal details."}{" "}
+                      {visibleFixtureNotes.length}/1200
+                    </p>
+                  </div>
+                </div>
               </div>
               {busy ? (
                 <div className="mt-8" aria-live="polite">
                   <div className="flex items-center justify-between text-xs font-bold text-black/55">
                     <span>
-                      {stage === "uploading"
-                        ? "Uploading securely"
+                      {stage === "preparing"
+                        ? "Preparing screenshot"
                         : "Generating analysis"}
                     </span>
                     <span>{progress}%</span>
                   </div>
                   <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/8">
                     <div
-                      className="h-full rounded-full bg-[#d2ae00] transition-[width]"
+                      className="h-full rounded-full bg-signal-ink transition-[width]"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -215,10 +301,10 @@ export function ScreenshotUploader() {
                   <button
                     type="button"
                     onClick={analyze}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md bg-[#090909] px-5 py-3 font-black text-white hover:bg-black/82 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#090909]"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md bg-ink px-5 py-3 font-black text-white hover:bg-black/82 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                   >
                     <UploadCloud
-                      className="size-4 text-[#ffd400]"
+                      className="size-4 text-signal"
                       aria-hidden="true"
                     />
                     Analyze screenshot
@@ -248,25 +334,36 @@ export function ScreenshotUploader() {
         ) : (
           <label
             htmlFor="screenshot"
-            className="grid min-h-80 cursor-pointer place-items-center px-6 py-12 text-center focus-within:outline-2 focus-within:outline-offset-[-4px] focus-within:outline-[#090909]"
+            className="grid min-h-80 cursor-pointer place-items-center px-6 py-12 text-center focus-within:outline-2 focus-within:outline-offset-[-4px] focus-within:outline-ink"
           >
             <div>
-              <span className="mx-auto grid size-14 place-items-center rounded-md bg-[#090909] text-[#ffd400]">
+              <span className="mx-auto grid size-14 place-items-center rounded-md bg-ink text-signal">
                 <ImagePlus className="size-6" aria-hidden="true" />
               </span>
-              <span className="mt-5 block text-lg font-black text-[#090909]">
+              <span className="mt-5 block text-lg font-black text-ink">
                 Drop a match screenshot here
               </span>
               <span className="mt-2 block text-sm leading-6 text-black/48">
                 or choose a JPG, PNG, or WebP image up to 10 MB
               </span>
-              <span className="mt-5 inline-flex rounded-md border border-black/18 px-4 py-2 text-sm font-bold text-[#090909]">
+              <span className="mt-2 block text-xs font-semibold text-black/42">
+                Processed once and discarded after analysis
+              </span>
+              <span className="mt-5 inline-flex rounded-md border border-black/18 px-4 py-2 text-sm font-bold text-ink">
                 Choose image
               </span>
             </div>
           </label>
         )}
       </div>
+      <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-black/48">
+        <ShieldCheck
+          className="mt-0.5 size-4 shrink-0 text-emerald-700"
+          aria-hidden="true"
+        />
+        The screenshot is not saved to your account. Only the structured
+        analysis report remains in your history.
+      </p>
       {error ? (
         <div
           className="mt-4 flex items-start gap-2 rounded-md border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-900"
@@ -285,7 +382,7 @@ export function ScreenshotUploader() {
             className="size-4 animate-spin motion-reduce:animate-none"
             aria-hidden="true"
           />
-          Keep this page open while the screenshot is processed.
+          Keep this page open while the screenshot is processed and discarded.
         </p>
       ) : null}
       {result ? (

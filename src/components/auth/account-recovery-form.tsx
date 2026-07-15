@@ -19,7 +19,7 @@ import {
 } from "@/lib/validation/auth";
 
 const inputClass =
-  "mt-2 min-h-12 w-full rounded-md border border-black/18 bg-white px-4 text-[#090909] outline-none focus:border-black focus:ring-2 focus:ring-[#ffd400]/55";
+  "mt-2 min-h-12 w-full rounded-md border border-black/18 bg-white px-4 text-ink outline-none focus:border-black focus:ring-2 focus:ring-signal/55";
 
 function Result({ value }: { value: AuthActionResult | null }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -64,7 +64,7 @@ export function ForgotPasswordForm() {
       <div>
         <label
           htmlFor="recovery-email"
-          className="text-sm font-bold text-[#242624]"
+          className="text-sm font-bold text-graphite"
         >
           Email address
         </label>
@@ -90,7 +90,7 @@ export function ForgotPasswordForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#090909] px-5 py-3 font-black text-white disabled:opacity-60"
+        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 py-3 font-black text-white disabled:opacity-60"
       >
         {isSubmitting ? (
           <LoaderCircle
@@ -138,7 +138,7 @@ export function ResetPasswordForm() {
       <div>
         <label
           htmlFor="new-password"
-          className="text-sm font-bold text-[#242624]"
+          className="text-sm font-bold text-graphite"
         >
           New password
         </label>
@@ -180,7 +180,7 @@ export function ResetPasswordForm() {
       <div>
         <label
           htmlFor="new-password-confirm"
-          className="text-sm font-bold text-[#242624]"
+          className="text-sm font-bold text-graphite"
         >
           Confirm new password
         </label>
@@ -207,7 +207,7 @@ export function ResetPasswordForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#090909] px-5 py-3 font-black text-white disabled:opacity-60"
+        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 py-3 font-black text-white disabled:opacity-60"
       >
         {isSubmitting ? (
           <LoaderCircle

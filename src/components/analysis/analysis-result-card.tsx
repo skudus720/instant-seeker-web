@@ -1,11 +1,23 @@
-import { AlertTriangle, Clock3, FileSearch, ScanText } from "lucide-react";
+import {
+  AlertTriangle,
+  Clock3,
+  FileSearch,
+  Gauge,
+  ScanText,
+} from "lucide-react";
 import { ConfidenceBadge, RiskBadge } from "@/components/ui/risk-badge";
-import type { AnalysisResult } from "@/lib/types";
+import type { AnalysisResult, MatchSource } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function probabilityDisplay(probability: number) {
   return Math.max(0, Math.min(100, Math.round(probability * 20) * 5));
 }
+
+const matchSourceLabel: Record<MatchSource, string> = {
+  "model-extracted": "Model-extracted",
+  "user-provided": "User-provided context",
+  demo: "Demo sample",
+};
 
 export function AnalysisResultCard({
   result,
@@ -21,7 +33,7 @@ export function AnalysisResultCard({
     >
       <header
         className={cn(
-          "border-b border-black/8 bg-[#090909] text-white",
+          "border-b border-black/8 bg-ink text-white",
           compact ? "p-5" : "p-6 sm:p-8",
         )}
       >
@@ -30,7 +42,7 @@ export function AnalysisResultCard({
             <span
               className={
                 result.label === "Demonstration analysis"
-                  ? "inline-flex rounded-full border border-[#ffd400]/45 bg-[#ffd400]/10 px-3 py-1 text-xs font-black text-[#ffd400]"
+                  ? "inline-flex rounded-full border border-signal/45 bg-signal/10 px-3 py-1 text-xs font-black text-signal"
                   : "inline-flex rounded-full border border-emerald-300/45 bg-emerald-400/10 px-3 py-1 text-xs font-black text-emerald-200"
               }
             >
@@ -54,7 +66,7 @@ export function AnalysisResultCard({
           </p>
         </div>
         {result.label === "Demonstration analysis" ? (
-          <p className="mt-5 border-l-2 border-[#ffd400] pl-4 text-sm leading-6 text-white/65">
+          <p className="mt-5 border-l-2 border-signal pl-4 text-sm leading-6 text-white/65">
             This output demonstrates the report format. It did not read or
             predict fixtures from your screenshot.
           </p>
@@ -74,21 +86,49 @@ export function AnalysisResultCard({
             </strong>
           </span>
         </div>
+        {result.summary ? (
+          <div className="mt-6 grid gap-px overflow-hidden rounded-md border border-black/10 bg-black/10 sm:grid-cols-3">
+            <div className="bg-paper p-4">
+              <p className="flex items-center gap-2 text-xs font-black text-black/42 uppercase">
+                <Gauge className="size-4" aria-hidden="true" />
+                Risk posture
+              </p>
+              <p className="mt-2 font-black text-ink capitalize">
+                {result.summary.riskPosture}
+              </p>
+            </div>
+            <div className="bg-paper p-4 sm:col-span-2">
+              <p className="text-xs font-black text-black/42 uppercase">
+                Report signal
+              </p>
+              <p className="mt-2 text-sm leading-6 font-semibold text-black/62">
+                {result.summary.overallSignal}. {result.summary.decisionNote}
+              </p>
+            </div>
+          </div>
+        ) : null}
         <div className="mt-6 grid gap-4">
           {result.detectedMatches.map((match) => {
             const probability = probabilityDisplay(match.estimatedProbability);
             return (
               <section
                 key={match.id}
-                className="rounded-md border border-black/10 bg-[#f7f8f4] p-5"
+                className="rounded-md border border-black/10 bg-paper p-5"
                 aria-label={match.fixture}
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="font-black text-[#090909]">{match.fixture}</p>
-                    <p className="mt-1 text-xs text-black/44">
-                      {match.visibleMarket}
-                    </p>
+                    <p className="font-black text-ink">{match.fixture}</p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <p className="text-xs text-black/44">
+                        {match.visibleMarket}
+                      </p>
+                      {match.source ? (
+                        <span className="rounded-full border border-black/12 bg-white px-2 py-0.5 text-[11px] font-black text-black/48">
+                          {matchSourceLabel[match.source]}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <ConfidenceBadge level={match.confidence} />
@@ -101,11 +141,11 @@ export function AnalysisResultCard({
                       <p className="text-xs font-bold text-black/42 uppercase">
                         Estimated probability
                       </p>
-                      <p className="mt-1 text-sm font-black text-[#090909]">
+                      <p className="mt-1 text-sm font-black text-ink">
                         {match.predictedCategory}
                       </p>
                     </div>
-                    <p className="text-xl font-black text-[#090909] tabular-nums">
+                    <p className="text-xl font-black text-ink tabular-nums">
                       ~{probability}%
                     </p>
                   </div>
@@ -115,7 +155,7 @@ export function AnalysisResultCard({
                     aria-label={`Estimated probability approximately ${probability} percent`}
                   >
                     <div
-                      className="h-full rounded-full bg-[#d2ae00]"
+                      className="h-full rounded-full bg-signal-ink"
                       style={{ width: `${probability}%` }}
                     />
                   </div>
@@ -142,7 +182,7 @@ export function AnalysisResultCard({
         ) : null}
         {result.extractedVisibleText.length > 0 ? (
           <details className="mt-6 border-t border-black/10 pt-5">
-            <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-black text-[#090909]">
+            <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-black text-ink">
               <ScanText className="size-4" aria-hidden="true" />
               Extracted visible text
             </summary>

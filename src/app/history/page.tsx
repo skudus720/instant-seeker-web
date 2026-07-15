@@ -4,7 +4,7 @@ import { AnalysisResultCard } from "@/components/analysis/analysis-result-card";
 import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState } from "@/components/ui/empty-state";
 import { analysisResultSchema } from "@/lib/analysis/schema";
-import { requireUser } from "@/lib/auth";
+import { requirePaidUser } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { AnalysisResult } from "@/lib/types";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Analysis history" };
 export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {
-  const user = await requireUser("/history");
+  const user = await requirePaidUser("/history");
   let analyses: AnalysisResult[] = [];
   if (!user.demo) {
     const supabase = await createServerSupabaseClient();
@@ -29,11 +29,11 @@ export default async function HistoryPage() {
     });
   }
   return (
-    <AppShell user={user}>
-      <p className="text-xs font-black text-[#8a7200] uppercase">
+    <AppShell user={user} current="history">
+      <p className="text-xs font-black text-signal-ink uppercase">
         Account records
       </p>
-      <h1 className="mt-2 text-3xl font-black text-[#090909] sm:text-5xl">
+      <h1 className="mt-2 text-3xl font-black text-ink sm:text-5xl">
         Analysis history
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-black/52">

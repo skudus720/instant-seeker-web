@@ -13,6 +13,7 @@ export function formatCurrency(
     return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
+      currencyDisplay: "code",
       maximumFractionDigits: 2,
     }).format(amount);
   } catch {

@@ -12,11 +12,18 @@ describe("private data authorization", () => {
     expect(
       canAccessPrivateRecord({ id: "admin", role: "admin" }, "owner"),
     ).toBe(true);
+    expect(
+      canAccessPrivateRecord(
+        { id: "super-admin", role: "super_admin" },
+        "owner",
+      ),
+    ).toBe(true);
     expect(canAccessPrivateRecord(null, "owner")).toBe(false);
   });
 
   it("reserves moderation for administrators", () => {
     expect(canModerate({ role: "user" })).toBe(false);
     expect(canModerate({ role: "admin" })).toBe(true);
+    expect(canModerate({ role: "super_admin" })).toBe(true);
   });
 });

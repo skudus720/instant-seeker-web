@@ -3,10 +3,7 @@ import { Logo } from "@/components/ui/logo";
 
 export default function Loading() {
   return (
-    <main
-      id="main-content"
-      className="min-h-screen bg-[#f4f5f0] px-5 py-8 sm:px-8"
-    >
+    <main id="main-content" className="min-h-screen bg-paper px-5 py-8 sm:px-8">
       <div className="mx-auto max-w-[1200px]">
         <Logo />
         <div className="mt-16 max-w-3xl">

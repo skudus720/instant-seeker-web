@@ -37,6 +37,11 @@ yarn-error.log*
 .env*
 !.env.example
 
+# local deploy helpers / secrets
+hostinger.env
+hostinger-supabase.env
+instant-seeker-hostinger.zip
+
 # vercel
 .vercel
 

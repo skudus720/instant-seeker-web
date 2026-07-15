@@ -46,22 +46,22 @@ export function LiveWinnerTicker({
 
   return (
     <section
-      className="bg-white py-20 sm:py-24"
+      className="dark-section border-t border-white/10 py-20 sm:py-24"
       aria-labelledby="recent-wins-title"
     >
-      <div className="mx-auto grid max-w-[1200px] gap-10 px-5 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+      <div className="relative mx-auto grid max-w-[1200px] gap-10 px-5 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
         <div>
-          <span className="inline-flex items-center gap-2 text-xs font-black text-emerald-700 uppercase">
+          <span className="inline-flex items-center gap-2 text-xs font-black text-signal uppercase">
             <Radio className="size-4" aria-hidden="true" />
             Verified records only
           </span>
           <h2
             id="recent-wins-title"
-            className="mt-4 text-3xl font-black text-[#090909] sm:text-5xl"
+            className="mt-4 text-3xl font-black text-white sm:text-5xl"
           >
             Recent Verified Wins
           </h2>
-          <p className="mt-5 max-w-md text-sm leading-6 text-black/58">
+          <p className="mt-5 max-w-md text-sm leading-6 text-white/58">
             Activity appears only after an authorized reviewer verifies the
             record. Names are shortened and private ticket data never appears
             here.
@@ -72,10 +72,11 @@ export function LiveWinnerTicker({
             icon={Trophy}
             title="No verified wins published yet"
             description="Verified activity will appear here after genuine records are submitted and approved. No random notifications are generated."
+            tone="dark"
           />
         ) : (
           <div
-            className="overflow-hidden border-y border-black/12"
+            className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035]"
             aria-live="polite"
           >
             <AnimatePresence initial={false} mode="popLayout">
@@ -86,27 +87,27 @@ export function LiveWinnerTicker({
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduced ? undefined : { opacity: 0 }}
                   key={win.id}
-                  className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-black/8 px-2 py-4 last:border-b-0 sm:px-4"
+                  className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-white/8 px-3 py-4 last:border-b-0 sm:px-5"
                 >
                   <span
-                    className="grid size-10 place-items-center rounded-md bg-[#090909] font-black text-[#ffd400]"
+                    className="grid size-10 place-items-center rounded-xl bg-signal font-black text-ink"
                     aria-hidden="true"
                   >
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <div className="min-w-0">
-                    <p className="flex items-center gap-1.5 truncate font-bold text-[#090909]">
+                    <p className="flex items-center gap-1.5 truncate font-bold text-white">
                       {win.displayName}
                       <BadgeCheck
-                        className="size-4 shrink-0 text-emerald-600"
+                        className="size-4 shrink-0 text-success"
                         aria-label="Verified"
                       />
                     </p>
-                    <p className="mt-1 text-xs text-black/44">
+                    <p className="mt-1 text-xs text-white/42">
                       Verified {formatRelativeTime(win.verifiedAt)}
                     </p>
                   </div>
-                  <p className="text-right text-base font-black text-[#090909] sm:text-lg">
+                  <p className="text-right text-base font-black text-signal sm:text-lg">
                     {formatCurrency(win.amount, win.currency)}
                   </p>
                 </motion.article>

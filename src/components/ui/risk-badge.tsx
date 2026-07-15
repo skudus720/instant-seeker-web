@@ -22,7 +22,7 @@ export function RiskBadge({ level }: { level: RiskLevel }) {
 
 export function ConfidenceBadge({ level }: { level: ConfidenceLevel }) {
   return (
-    <span className="inline-flex rounded-full border border-black/15 bg-white px-2.5 py-1 text-xs font-bold text-[#323532] capitalize">
+    <span className="inline-flex rounded-full border border-black/15 bg-white px-2.5 py-1 text-xs font-bold text-muted capitalize">
       {level} confidence
     </span>
   );

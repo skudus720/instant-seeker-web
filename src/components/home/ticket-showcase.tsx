@@ -13,16 +13,16 @@ export function TicketShowcase() {
   const ticketExists = existsSync(ticketPath);
 
   return (
-    <div className="relative mx-auto w-full max-w-[470px]">
+    <div className="relative mx-auto w-full max-w-[360px] lg:max-w-[390px]">
       <div
-        className="absolute -inset-3 rounded-lg border border-[#ffd400]/18"
+        className="absolute -inset-4 rounded-[3rem] border border-signal/18 bg-signal/[0.03]"
         aria-hidden="true"
       />
-      <div className="ticket-scanner relative aspect-[4/5] overflow-hidden rounded-lg border border-white/14 bg-[#121310] shadow-[0_24px_80px_rgba(0,0,0,0.44)]">
-        <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-white/10 bg-black/50 px-4 py-3 text-xs text-white/65 backdrop-blur-md">
+      <div className="ticket-scanner relative aspect-[9/14] overflow-hidden rounded-[2.5rem] border-[10px] border-graphite bg-black shadow-[0_28px_90px_rgba(0,0,0,0.55)]">
+        <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-white/10 bg-black/68 px-5 py-4 text-xs text-white/65 backdrop-blur-md">
           <span className="inline-flex items-center gap-2 font-bold text-white">
-            <ScanLine className="size-4 text-[#ffd400]" aria-hidden="true" />
-            Ticket preview
+            <ScanLine className="size-4 text-signal" aria-hidden="true" />
+            AI scanner
           </span>
           <span className="inline-flex items-center gap-1.5">
             <LockKeyhole className="size-3.5" aria-hidden="true" />
@@ -37,8 +37,8 @@ export function TicketShowcase() {
               alt="Owner-supplied SportyBet result ticket with privacy masks over sensitive identifiers"
               fill
               priority
-              sizes="(max-width: 768px) 92vw, 470px"
-              className="object-contain px-5 pt-16 pb-10"
+              sizes="(max-width: 768px) 86vw, 390px"
+              className="object-contain px-4 pt-20 pb-14"
             />
             <span
               className="privacy-mask top-[18%] right-[7%]"
@@ -50,17 +50,17 @@ export function TicketShowcase() {
             />
           </>
         ) : (
-          <div className="grid h-full place-items-center px-8 pt-16 text-center">
+          <div className="grid h-full place-items-center px-8 pt-20 text-center">
             <div>
-              <span className="mx-auto grid size-14 place-items-center rounded-md border border-[#ffd400]/35 bg-[#ffd400]/8 text-[#ffd400]">
+              <span className="mx-auto grid size-16 place-items-center rounded-2xl border border-signal/35 bg-signal/10 text-signal">
                 <ImageIcon className="size-6" aria-hidden="true" />
               </span>
               <p className="mt-5 text-lg font-black text-white">
-                Winning ticket image not supplied
+                Screenshot preview slot
               </p>
               <p className="mt-2 text-sm leading-6 text-white/54">
                 Add an owner-approved, privacy-safe image at
-                <span className="mt-2 block font-mono text-xs text-[#ffd400]">
+                <span className="mt-2 block font-mono text-xs text-signal">
                   /public/images/winning-ticket.png
                 </span>
               </p>
@@ -68,13 +68,16 @@ export function TicketShowcase() {
           </div>
         )}
         <span className="scanner-line" aria-hidden="true" />
-        <span className="absolute right-4 bottom-3 text-[10px] font-bold text-white/35">
-          IDENTIFIERS MASKED
+        <span className="absolute right-5 bottom-5 rounded-full border border-signal/25 bg-signal/10 px-3 py-1 text-[10px] font-black text-signal">
+          GUARANTEED
         </span>
       </div>
-      <div className="mt-4 flex items-center justify-between text-xs text-white/40">
-        <span>Private IDs stay hidden</span>
-        <span className="text-[#82f6b3]">Secure visual review</span>
+      <div className="absolute top-1/4 -right-3 hidden rounded-2xl border border-white/12 bg-graphite/90 px-3 py-2 text-xs font-black text-white shadow-xl backdrop-blur sm:block">
+        Analysis ready
+      </div>
+      <div className="mt-5 flex items-center justify-between text-xs text-white/42">
+        <span>Visible data only</span>
+        <span className="text-signal">Private visual review</span>
       </div>
     </div>
   );

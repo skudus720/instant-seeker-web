@@ -1,6 +1,13 @@
 import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function RatingStars({ rating }: { rating: number }) {
+export function RatingStars({
+  rating,
+  className,
+}: {
+  rating: number;
+  className?: string;
+}) {
   const normalized = Math.max(0, Math.min(5, Math.round(rating)));
   return (
     <div
@@ -10,7 +17,7 @@ export function RatingStars({ rating }: { rating: number }) {
       {Array.from({ length: 5 }, (_, index) => (
         <Star
           key={index}
-          className="size-4 text-[#d8af00]"
+          className={cn("size-4 text-signal-ink", className)}
           fill={index < normalized ? "currentColor" : "none"}
           aria-hidden="true"
         />

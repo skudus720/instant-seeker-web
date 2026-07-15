@@ -7,6 +7,11 @@ const result: AnalysisResult = {
   id: "demo-result",
   label: "Demonstration analysis",
   provider: "deterministic-demo",
+  summary: {
+    riskPosture: "balanced",
+    overallSignal: "Format preview only",
+    decisionNote: "Use this as a report-format preview.",
+  },
   detectedMatches: [
     {
       id: "fixture",
@@ -16,6 +21,7 @@ const result: AnalysisResult = {
       estimatedProbability: 0.514,
       confidence: "low",
       risk: "high",
+      source: "demo",
       explanation: "Demonstration only.",
     },
   ],
@@ -34,6 +40,8 @@ describe("analysis result rendering", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("~50%")).toBeInTheDocument();
     expect(screen.getByText("high risk")).toBeInTheDocument();
+    expect(screen.getByText("balanced")).toBeInTheDocument();
+    expect(screen.getByText("Demo sample")).toBeInTheDocument();
     expect(
       screen.getByText("Estimates are not guarantees."),
     ).toBeInTheDocument();
