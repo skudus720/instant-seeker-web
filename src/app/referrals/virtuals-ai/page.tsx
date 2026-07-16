@@ -16,7 +16,9 @@ export const dynamic = "force-dynamic";
 
 export default async function VirtualsAiPage() {
   const user = await requireSubAdmin();
-  const demoMode = user.demo || analysisProviderConfig.provider === "demo";
+  // Local screenshot OCR is used for ANALYSIS_PROVIDER=demo; only treat
+  // local preview accounts as non-live UI mode.
+  const demoMode = user.demo;
 
   return (
     <div className="virtuals-ai-page min-h-screen bg-[#080808] text-white">

@@ -259,8 +259,8 @@ export function VirtualsAiWorkspace({ demoMode }: { demoMode: boolean }) {
             </h1>
             <p className="virtuals-ai-subtitle mx-auto mt-5 max-w-xl text-sm leading-7 text-white/55 sm:text-lg">
               {demoMode
-                ? "Upload a virtual-match screenshot to preview the report format. Demo mode does not generate real team selections."
-                : "Upload a screenshot of visible virtual matches. Virtuals AI will return concise probability-based team selections."}
+                ? "Upload a virtual-match screenshot to preview the report format. Local preview accounts do not store analyses."
+                : "Upload a SportyBet Instant Virtuals screenshot. Virtuals AI reads the visible fixtures and returns matches to win."}
             </p>
           </div>
         )}
