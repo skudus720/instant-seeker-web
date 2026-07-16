@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -41,6 +42,20 @@ body {
   color: #ffffff;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
+}
+
+.auth-page {
+  font-family:
+    "Plus Jakarta Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.auth-page h1,
+.auth-page h2,
+.auth-page h3,
+.auth-page h4,
+.auth-page .font-heading {
+  font-family: "Outfit", sans-serif;
 }
 
 button,
@@ -937,6 +952,36 @@ a {
   50% {
     transform: translateX(258%);
     opacity: 1;
+  }
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

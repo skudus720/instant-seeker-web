@@ -1,15 +1,6 @@
-import {
-  ArrowLeft,
-  ArrowRight,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  Phone,
-  ScanLine,
-  ShieldCheck,
-} from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { Logo } from "@/components/ui/logo";
+import { ArrowLeft, EyeOff, Hexagon, Target, Wallet } from "lucide-react";
+import Link from "next/link";
 import { isDemoMode } from "@/lib/config";
 
 export function AuthShell({
@@ -30,195 +21,224 @@ export function AuthShell({
   return (
     <main
       id="main-content"
-      className="auth-surface relative min-h-dvh overflow-hidden bg-ink text-white"
+      className="auth-page relative flex min-h-screen w-full flex-col overflow-hidden bg-[#07080A] lg:flex-row"
     >
-      <div className="auth-grid pointer-events-none absolute inset-0" />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-signal/50"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -top-28 right-[-8%] h-[30rem] w-[30rem] rounded-full bg-signal/12 blur-3xl"
-        aria-hidden="true"
-      />
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col px-5 sm:px-8">
-        <header className="flex min-h-20 items-center justify-between gap-5 sm:min-h-24">
-          <Logo inverse />
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-sm font-bold text-white/70 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-            >
-              <ArrowLeft className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Home</span>
-            </Link>
-            {isSignup ? (
-              <Link
-                href="/login"
-                className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-bold text-white/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-              >
-                Login
-              </Link>
-            ) : null}
-            <Link
-              href={isSignup ? "/signup#signup-form" : "/signup"}
-              className="inline-flex min-h-11 items-center rounded-full bg-signal px-4 text-sm font-black text-ink shadow-[0_0_28px_rgba(255,202,39,0.2)] transition-colors hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-            >
-              Get Started
-            </Link>
-          </div>
-        </header>
+      {/* Soft Atmospheric Background */}
+      <div className="bg-grid-pattern pointer-events-none absolute inset-0"></div>
+      <div className="pointer-events-none absolute -top-[20%] -left-[10%] h-[50%] w-[50%] rounded-full bg-[#FFCA27] opacity-[0.03] blur-[150px]"></div>
+      <div className="pointer-events-none absolute top-[40%] right-[10%] h-[40%] w-[30%] rounded-full bg-[#FFCA27] opacity-[0.02] blur-[120px]"></div>
 
-        <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:py-14">
-          <section
-            className="mx-auto hidden w-full max-w-xl lg:mx-0 lg:block"
-            aria-labelledby="auth-context-title"
-          >
-            <p className="inline-flex items-center rounded-full border border-signal/55 px-3.5 py-1.5 text-[11px] font-black tracking-[0.02em] text-signal uppercase">
-              AI-Powered Analysis · 18+
-            </p>
-            <h2
-              id="auth-context-title"
-              className="mt-6 max-w-[15ch] text-5xl leading-[1.02] font-black text-white sm:text-6xl"
-            >
-              {isSignup
-                ? "Turn match screenshots into clearer probability insights."
-                : "Return to clearer probability insights."}
-            </h2>
-            <p className="mt-6 max-w-lg text-base leading-7 text-white/58">
-              {isSignup
-                ? "Create your account, pay once with Mobile Money, and keep every structured analysis report in one private workspace."
-                : "Upload virtual-match screenshots and receive AI-assisted probability estimates. No guarantees — just smarter analysis."}
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              {isSignup ? (
-                <>
-                  <a
-                    href="#signup-form"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-signal px-5 text-sm font-black text-ink shadow-[0_0_34px_rgba(255,202,39,0.22)] transition-colors hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-                  >
-                    Start Analysing
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </a>
-                  <Link
-                    href="/login"
-                    className="inline-flex min-h-12 items-center rounded-full border border-white/22 px-5 text-sm font-black text-white transition-colors hover:border-white/40 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-                  >
-                    Login
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/signup"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-signal px-5 text-sm font-black text-ink shadow-[0_0_34px_rgba(255,202,39,0.22)] transition-colors hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-                  >
-                    Start Analysing
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                  <Link
-                    href="/#how-it-works"
-                    className="inline-flex min-h-12 items-center rounded-full border border-white/22 px-5 text-sm font-black text-white transition-colors hover:border-white/40 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-                  >
-                    See How It Works
-                  </Link>
-                </>
-              )}
-            </div>
-
-            <div className="relative mt-12 max-w-md overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0a0a0a] p-5 shadow-[0_0_70px_rgba(255,202,39,0.12)]">
-              <div
-                className="pointer-events-none absolute inset-x-6 -bottom-8 h-24 rounded-full bg-signal/30 blur-3xl"
-                aria-hidden="true"
+      {/* =========================================
+          LEFT PANEL: BRAND STORY (DESKTOP)
+          ========================================= */}
+      <div className="relative z-10 hidden w-full flex-col justify-between border-r border-white/5 px-12 py-12 lg:flex lg:w-[45%] xl:w-[40%] xl:px-20 xl:py-16">
+        <div className="animate-fade-up space-y-12">
+          {/* Logo */}
+          <Link href="/" className="group inline-flex items-center gap-3">
+            <div className="relative flex h-8 w-8 items-center justify-center transition-transform duration-300 group-hover:scale-105">
+              <Hexagon
+                className="absolute h-8 w-8 text-[#FFCA27] opacity-80"
+                strokeWidth={1.5}
               />
-              <div className="relative grid grid-cols-3 gap-3">
-                {(isSignup
-                  ? [
-                      { label: "Create account", icon: ScanLine },
-                      { label: "Mobile Money", icon: Phone },
-                      { label: "Start analysing", icon: ChartNoAxesCombined },
-                    ]
-                  : [
-                      { label: "Screenshot", icon: ScanLine },
-                      { label: "Probability", icon: ChartNoAxesCombined },
-                      { label: "Private report", icon: LockKeyhole },
-                    ]
-                ).map((item) => (
-                  <div key={item.label} className="min-w-0">
-                    <span className="grid size-11 place-items-center rounded-2xl border border-signal/30 bg-signal/10 text-signal">
-                      <item.icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <p className="mt-3 text-xs font-bold text-white/55">
-                      {item.label}
-                    </p>
-                  </div>
-                ))}
+              <div className="h-2.5 w-2.5 rounded-sm bg-[#FFCA27]"></div>
+            </div>
+            <span className="font-heading text-2xl font-semibold tracking-wide text-white">
+              Instant<span className="text-[#FFCA27]">Seeker</span>
+            </span>
+          </Link>
+
+          {/* Intro Story */}
+          {isSignup ? (
+            <div className="max-w-md space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 backdrop-blur-sm">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#FFCA27]"></div>
+                <span className="text-xs font-medium tracking-wide text-[#94A3B8] uppercase">
+                  AI-Powered Analysis · 18+
+                </span>
               </div>
-              <div
-                className="relative mt-5 h-1 rounded-full bg-signal shadow-[0_0_16px_rgba(255,202,39,0.55)]"
-                aria-hidden="true"
-              />
-            </div>
 
-            <div className="mt-7 flex items-start gap-3 text-sm leading-6 text-white/48">
-              <ShieldCheck
-                className="mt-0.5 size-4 shrink-0 text-success"
-                aria-hidden="true"
-              />
-              <p>
-                Independent service. No bets or betting funds are handled.
-                Probability insights are estimates, never guarantees. 18+.
-              </p>
-            </div>
-          </section>
-
-          <section className="mx-auto w-full max-w-[520px] lg:mx-0 lg:justify-self-end">
-            <div className="mb-6 text-center lg:text-left">
-              <p className="inline-flex items-center rounded-full border border-signal/55 px-3 py-1 text-[11px] font-black tracking-[0.02em] text-signal uppercase lg:hidden">
-                AI-Powered Analysis · 18+
-              </p>
-              <p className="mt-4 text-xs font-black text-signal uppercase lg:mt-0">
-                {isSignup ? "Sign-up & Mobile Money" : "Member access"}
-              </p>
-              <h1
-                id={isSignup ? "signup-form" : undefined}
-                className="mt-3 scroll-mt-28 text-4xl leading-none font-black sm:text-5xl"
-              >
-                {title}
+              <h1 className="font-heading text-4xl leading-[1.15] font-semibold text-white xl:text-5xl">
+                Set up your private analysis workspace.
               </h1>
-              <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-white/55 lg:mx-0">
-                {description}
+
+              <p className="text-lg leading-relaxed text-[#94A3B8]">
+                Pay once with Mobile Money, upload your match screenshots, and
+                let our intelligence refine your selections.
               </p>
             </div>
+          ) : (
+            <div className="max-w-md space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 backdrop-blur-sm">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#FFCA27]"></div>
+                <span className="text-xs font-medium tracking-wide text-[#94A3B8] uppercase">
+                  AI-Powered Analysis · Member Access
+                </span>
+              </div>
 
-            {isDemoMode ? (
-              <p
-                className="mb-4 rounded-2xl border border-signal/35 bg-signal/10 px-4 py-3 text-sm font-semibold text-signal"
-                role="status"
-              >
-                Demo mode: forms can be previewed, but no account is stored and
-                no payment is collected.
+              <h1 className="font-heading text-4xl leading-[1.15] font-semibold text-white xl:text-5xl">
+                Welcome back to your workspace.
+              </h1>
+
+              <p className="text-lg leading-relaxed text-[#94A3B8]">
+                Log in to review your private reports, upload new screenshots,
+                and continue analyzing selections.
               </p>
-            ) : null}
+            </div>
+          )}
 
-            {notice ? (
-              <p
-                className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-200"
-                role="status"
-              >
-                {notice}
-              </p>
-            ) : null}
+          {/* Bullet Points */}
+          <div className="space-y-6 pt-6">
+            {[
+              {
+                icon: EyeOff,
+                title: "Screenshot Privacy",
+                desc: "Your uploads are analyzed instantly and never stored permanently.",
+              },
+              {
+                icon: Wallet,
+                title: isSignup ? "Mobile Money Access" : "Secure Workspace",
+                desc: isSignup
+                  ? "Secure, seamless GHS transactions supported natively."
+                  : "Access your private workspace and reports securely.",
+              },
+              {
+                icon: Target,
+                title: isSignup ? "Responsible Estimates" : "Logical Choices",
+                desc: isSignup
+                  ? "Data-driven pattern recognition, tailored for logical decisions."
+                  : "Get analytical insights based on historical match patterns.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-white/5 bg-[#101216] text-[#FFCA27]">
+                  <item.icon size={20} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="font-heading mb-1 text-base font-medium text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-[#94A3B8]">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-            <div className="auth-panel relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#0c0c0c] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.45)] sm:p-7">
-              <div
-                className="pointer-events-none absolute inset-x-10 -bottom-10 h-24 rounded-full bg-signal/20 blur-3xl"
-                aria-hidden="true"
+        {/* Footer Note */}
+        <div className="animate-fade-up mt-12 border-t border-white/5 pt-8 delay-200">
+          <p className="text-xs leading-relaxed text-[#64748B]">
+            Estimates only. Instant Seeker provides analytical perspectives
+            based on historical patterns. The user remains entirely responsible
+            for all final decisions and actions.
+          </p>
+        </div>
+      </div>
+
+      {/* =========================================
+          RIGHT PANEL: AUTHENTICATION FORM CARD
+          ========================================= */}
+      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-6 py-12 lg:max-w-none lg:p-12">
+        {/* Float Home Link for Quick Navigation */}
+        <div className="absolute top-6 right-6 z-20">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/5 bg-[#101216] px-3.5 py-1.5 text-xs text-[#94A3B8] transition-colors hover:bg-white/[0.05] hover:text-white"
+          >
+            <ArrowLeft className="size-3 text-[#94A3B8]" aria-hidden="true" />
+            Back to Home
+          </Link>
+        </div>
+
+        {/* Mobile Header (Hidden on Desktop) */}
+        <div className="animate-fade-up mb-8 w-full max-w-md lg:hidden">
+          <Link href="/" className="group mb-8 inline-flex items-center gap-3">
+            <div className="relative flex h-7 w-7 items-center justify-center transition-transform duration-300 group-hover:scale-105">
+              <Hexagon
+                className="absolute h-7 w-7 text-[#FFCA27] opacity-80"
+                strokeWidth={1.5}
               />
-              <div className="relative">{children}</div>
+              <div className="h-2 w-2 rounded-sm bg-[#FFCA27]"></div>
             </div>
-          </section>
+            <span className="font-heading text-xl font-semibold tracking-wide text-white">
+              Instant<span className="text-[#FFCA27]">Seeker</span>
+            </span>
+          </Link>
+          <h1 className="font-heading mb-3 text-3xl font-semibold text-white">
+            {isSignup ? "Create your account" : "Welcome back"}
+          </h1>
+          <p className="text-sm text-[#94A3B8]">{description}</p>
+        </div>
+
+        {/* Banners & Notices */}
+        {isDemoMode ? (
+          <div
+            className="mb-4 w-full max-w-md rounded-xl border border-[#FFCA27]/30 bg-[#FFCA27]/10 px-4 py-3 text-xs font-semibold text-[#FFCA27]"
+            role="status"
+          >
+            Demo mode: forms can be previewed, but no account is stored and no
+            payment is collected.
+          </div>
+        ) : null}
+
+        {notice ? (
+          <div
+            className="mb-4 w-full max-w-md rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-xs font-semibold text-emerald-200"
+            role="status"
+          >
+            {notice}
+          </div>
+        ) : null}
+
+        {/* Form Card */}
+        <div className="animate-fade-up w-full max-w-md rounded-2xl border border-white/5 bg-[#101216] p-6 shadow-2xl delay-100 md:p-8">
+          <div className="mb-8 hidden lg:block">
+            <h2 className="font-heading text-2xl font-semibold text-white">
+              {title}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
+              {description}
+            </p>
+          </div>
+
+          {children}
+        </div>
+
+        {/* Mobile Trust Points & Note (Hidden on Desktop) */}
+        <div className="animate-fade-up mt-12 w-full max-w-md space-y-8 delay-200 lg:hidden">
+          <div className="grid grid-cols-1 gap-4">
+            {[
+              { icon: EyeOff, title: "Screenshot Privacy" },
+              {
+                icon: Wallet,
+                title: isSignup ? "Mobile Money Access" : "Secure Workspace",
+              },
+              {
+                icon: Target,
+                title: isSignup ? "Responsible Estimates" : "Logical Choices",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-lg border border-white/5 bg-[#101216]/50 p-3"
+              >
+                <item.icon
+                  size={16}
+                  className="text-[#FFCA27]"
+                  strokeWidth={2}
+                />
+                <span className="text-sm font-medium text-white">
+                  {item.title}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-[11px] leading-relaxed text-[#64748B]">
+            Estimates only. Instant Seeker provides analytical perspectives
+            based on historical patterns. The user remains entirely responsible
+            for all final decisions.
+          </p>
         </div>
       </div>
     </main>

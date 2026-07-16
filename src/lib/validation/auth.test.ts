@@ -78,5 +78,7 @@ describe("authentication validation", () => {
     expect(normalizeGhanaMomoNumber("024 123 4567")).toBe("+233241234567");
     expect(normalizeGhanaMomoNumber("233541234567")).toBe("+233541234567");
     expect(normalizeGhanaMomoNumber("+233 55 123 4567")).toBe("+233551234567");
+    expect(normalizeGhanaMomoNumber("541234567")).toBe("+233541234567");
+    expect(normalizeGhanaMomoNumber("24 123 4567")).toBe("+233241234567");
   });
 });

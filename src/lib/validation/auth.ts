@@ -10,6 +10,7 @@ const password = z
 
 export function normalizeGhanaMomoNumber(value: string): string {
   const compact = value.trim().replace(/[\s()-]/g, "");
+  if (/^[25]\d{8}$/.test(compact)) return `+233${compact}`;
   if (/^0[25]\d{8}$/.test(compact)) return `+233${compact.slice(1)}`;
   if (/^233[25]\d{8}$/.test(compact)) return `+${compact}`;
   return compact;

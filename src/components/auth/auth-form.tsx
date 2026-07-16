@@ -1,28 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRight,
-  Check,
-  Eye,
-  EyeOff,
-  LoaderCircle,
-  LockKeyhole,
-  Mail,
-  Phone,
-  ReceiptText,
-  ShieldCheck,
-  UserRound,
-} from "lucide-react";
+import { Check, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ComponentType,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import {
   loginAction,
@@ -36,13 +18,10 @@ import {
   type SignupInput,
 } from "@/lib/validation/auth";
 
-const inputClass =
-  "min-h-14 w-full rounded-2xl border border-white/12 bg-white/[0.045] px-11 text-white outline-none transition-colors placeholder:text-white/25 hover:border-white/22 focus:border-signal focus:ring-2 focus:ring-signal/20";
-
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-2 text-xs font-semibold text-rose-300">
+    <p id={id} className="mt-1.5 text-xs font-semibold text-rose-400">
       {message}
     </p>
   );
@@ -61,8 +40,8 @@ function FormStatus({ result }: { result: AuthActionResult | null }) {
       role={result.ok ? "status" : "alert"}
       className={
         result.ok
-          ? "rounded-md border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"
-          : "rounded-md border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-200"
+          ? "rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-xs font-medium text-emerald-300"
+          : "rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs font-medium text-rose-300"
       }
     >
       {result.message}
@@ -80,7 +59,6 @@ function TextField({
   hint,
   error,
   registration,
-  icon: Icon,
 }: {
   id: string;
   label: string;
@@ -91,36 +69,32 @@ function TextField({
   hint?: string;
   error?: string;
   registration: UseFormRegisterReturn;
-  icon: ComponentType<{ className?: string; "aria-hidden"?: "true" }>;
 }) {
   return (
-    <div>
-      <label htmlFor={id} className="text-sm font-bold text-white/82">
+    <div className="w-full space-y-1.5">
+      <label htmlFor={id} className="text-xs font-medium text-[#94A3B8]">
         {label}
       </label>
-      <div className="relative mt-2">
-        <Icon
-          className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-signal"
-          aria-hidden="true"
-        />
-        <input
-          id={id}
-          type={type}
-          inputMode={inputMode}
-          autoComplete={autoComplete}
-          placeholder={placeholder}
-          aria-invalid={Boolean(error)}
-          aria-describedby={
-            [hint ? `${id}-hint` : null, error ? `${id}-error` : null]
-              .filter(Boolean)
-              .join(" ") || undefined
-          }
-          className={inputClass}
-          {...registration}
-        />
-      </div>
+      <input
+        id={id}
+        type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        aria-invalid={Boolean(error)}
+        aria-describedby={
+          [hint ? `${id}-hint` : null, error ? `${id}-error` : null]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+        className="w-full rounded-lg border border-white/10 bg-[#07080A] px-4 py-3 text-sm text-white placeholder-white/20 transition-all focus:border-[#FFCA27] focus:ring-1 focus:ring-[#FFCA27]/50 focus:outline-none"
+        {...registration}
+      />
       {hint ? (
-        <p id={`${id}-hint`} className="mt-2 text-xs leading-5 text-white/36">
+        <p
+          id={`${id}-hint`}
+          className="text-[11px] leading-relaxed text-[#64748B]"
+        >
           {hint}
         </p>
       ) : null}
@@ -146,15 +120,11 @@ function PasswordField({
 }) {
   const [visible, setVisible] = useState(false);
   return (
-    <div>
-      <label htmlFor={id} className="text-sm font-bold text-white/82">
+    <div className="w-full space-y-1.5">
+      <label htmlFor={id} className="text-xs font-medium text-[#94A3B8]">
         {label}
       </label>
-      <div className="relative mt-2">
-        <LockKeyhole
-          className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-signal"
-          aria-hidden="true"
-        />
+      <div className="relative">
         <input
           id={id}
           type={visible ? "text" : "password"}
@@ -162,13 +132,13 @@ function PasswordField({
           placeholder={placeholder}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`${inputClass} pr-12`}
+          className="w-full rounded-lg border border-white/10 bg-[#07080A] py-3 pr-11 pl-4 text-sm text-white placeholder-white/20 transition-all focus:border-[#FFCA27] focus:ring-1 focus:ring-[#FFCA27]/50 focus:outline-none"
           {...registration}
         />
         <button
           type="button"
           onClick={() => setVisible((value) => !value)}
-          className="absolute top-1/2 right-2 grid size-10 -translate-y-1/2 place-items-center rounded-md text-white/45 transition-colors hover:bg-white/6 hover:text-white focus-visible:outline-2 focus-visible:outline-signal"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8] transition-colors hover:text-white"
           aria-label={
             visible
               ? `Hide ${label.toLowerCase()}`
@@ -188,33 +158,6 @@ function PasswordField({
   );
 }
 
-function SubmitButton({
-  pending,
-  label,
-  pendingLabel,
-}: {
-  pending: boolean;
-  label: string;
-  pendingLabel: string;
-}) {
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-signal px-5 py-3 font-black text-ink shadow-[0_16px_34px_rgba(255,202,39,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-signal active:translate-y-0 disabled:cursor-wait disabled:opacity-65"
-    >
-      {pending ? (
-        <LoaderCircle
-          className="size-4 animate-spin motion-reduce:animate-none"
-          aria-hidden="true"
-        />
-      ) : null}
-      {pending ? pendingLabel : label}
-      {!pending ? <ArrowRight className="size-4" aria-hidden="true" /> : null}
-    </button>
-  );
-}
-
 function CheckboxField({
   error,
   registration,
@@ -226,23 +169,23 @@ function CheckboxField({
 }) {
   return (
     <div>
-      <label className="flex cursor-pointer items-start gap-3 text-sm leading-5 text-white/58">
-        <span className="relative mt-0.5 grid size-4 shrink-0 place-items-center">
+      <label className="group flex cursor-pointer items-start gap-3 text-sm leading-snug text-[#94A3B8] transition-colors hover:text-white">
+        <span className="relative mt-0.5 grid size-5 shrink-0 place-items-center">
           <input
             type="checkbox"
-            className="peer size-4 appearance-none rounded-[3px] border border-white/28 bg-white/5 checked:border-signal checked:bg-signal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+            className="peer size-5 cursor-pointer appearance-none rounded-md border border-white/10 bg-transparent transition-all duration-200 checked:border-[#FFCA27] checked:bg-[#FFCA27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFCA27]/50"
             {...registration}
           />
           <Check
-            className="pointer-events-none absolute size-3 text-ink opacity-0 peer-checked:opacity-100"
+            className="pointer-events-none absolute size-3.5 scale-75 text-black opacity-0 transition-transform peer-checked:scale-100 peer-checked:opacity-100"
             strokeWidth={3}
             aria-hidden="true"
           />
         </span>
-        <span>{children}</span>
+        <span className="pt-0.5">{children}</span>
       </label>
       {error ? (
-        <p className="mt-2 text-xs font-semibold text-rose-300">{error}</p>
+        <p className="mt-1.5 text-xs font-semibold text-rose-400">{error}</p>
       ) : null}
     </div>
   );
@@ -311,144 +254,174 @@ function SignupForm({
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5">
+    <form onSubmit={onSubmit} noValidate className="space-y-5">
       <FormStatus result={result} />
 
-      <div className="rounded-2xl border border-signal/30 bg-signal/10 p-4">
-        <div className="flex items-center justify-between gap-4">
-          <span className="flex min-w-0 items-center gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-signal text-ink">
-              <ReceiptText className="size-4" aria-hidden="true" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-black text-white">
-                One-time Mobile Money access
-              </span>
-              <span className="block text-xs text-white/45">
-                No subscription · No betting deposit · Paystack secure checkout
-              </span>
-            </span>
-          </span>
-          <strong className="shrink-0 text-xl font-black text-signal">
-            {signupFeeLabel}
-          </strong>
-        </div>
+      {/* Display Name & Email */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <TextField
+          id="displayName"
+          label="Display Name"
+          autoComplete="name"
+          placeholder="Seeker01"
+          error={errors.displayName?.message}
+          registration={register("displayName")}
+        />
+        <TextField
+          id="signup-email"
+          label="Email Address"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="name@example.com"
+          error={errors.email?.message}
+          registration={register("email")}
+        />
       </div>
 
-      <TextField
-        id="displayName"
-        label="Full or display name"
-        autoComplete="name"
-        placeholder="Your name"
-        error={errors.displayName?.message}
-        registration={register("displayName")}
-        icon={UserRound}
-      />
-      <TextField
-        id="signup-email"
-        label="Email address"
-        type="email"
-        inputMode="email"
-        autoComplete="email"
-        placeholder="you@example.com"
-        error={errors.email?.message}
-        registration={register("email")}
-        icon={Mail}
-      />
-      <TextField
-        id="momo-number"
-        label="Mobile Money number"
-        type="tel"
-        inputMode="tel"
-        autoComplete="tel"
-        placeholder="024 123 4567"
-        hint="Use the Ghana number you intend to pay with. Paystack may ask you to confirm it during checkout."
-        error={errors.momoNumber?.message}
-        registration={register("momoNumber")}
-        icon={Phone}
-      />
-      <div className="grid gap-5 sm:grid-cols-2">
+      {/* MoMo Number */}
+      <div className="space-y-1.5">
+        <label
+          htmlFor="momo-number"
+          className="text-xs font-medium text-[#94A3B8]"
+        >
+          MoMo Number (Ghana)
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+            <span className="text-sm text-[#94A3B8]">+233</span>
+          </div>
+          <input
+            id="momo-number"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="54 XXX XXXX"
+            aria-invalid={Boolean(errors.momoNumber)}
+            aria-describedby={
+              [
+                errors.momoNumber ? "momo-number-error" : null,
+                "momo-number-hint",
+              ]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+            className="w-full rounded-lg border border-white/10 bg-[#07080A] py-3 pr-4 pl-14 font-mono text-sm tracking-wide text-white placeholder-white/20 transition-all focus:border-[#FFCA27] focus:ring-1 focus:ring-[#FFCA27]/50 focus:outline-none"
+            {...register("momoNumber")}
+          />
+        </div>
+        <p
+          id="momo-number-hint"
+          className="text-[11px] leading-relaxed text-[#64748B]"
+        >
+          Use the Ghana number you intend to pay with. Paystack may ask you to
+          confirm it during checkout.
+        </p>
+        <FieldError
+          id="momo-number-error"
+          message={errors.momoNumber?.message}
+        />
+      </div>
+
+      {/* Passwords */}
+      <div className="space-y-5">
         <PasswordField
           id="signup-password"
           label="Password"
           autoComplete="new-password"
-          placeholder="8+ characters"
+          placeholder="••••••••"
           error={errors.password?.message}
           registration={register("password")}
         />
         <PasswordField
           id="confirm-password"
-          label="Confirm password"
+          label="Confirm Password"
           autoComplete="new-password"
-          placeholder="Repeat password"
+          placeholder="••••••••"
           error={errors.confirmPassword?.message}
           registration={register("confirmPassword")}
         />
       </div>
 
-      <div className="grid gap-3 border-t border-white/10 pt-5">
+      {/* Consents */}
+      <div className="space-y-4 pt-2">
         <CheckboxField
           error={errors.ageConfirmed?.message}
           registration={register("ageConfirmed")}
         >
-          I confirm that I am at least 18 years old.
+          I confirm that I am 18 years of age or older.
         </CheckboxField>
+
         <CheckboxField
           error={errors.termsAccepted?.message}
           registration={register("termsAccepted")}
         >
           I accept the{" "}
           <Link
-            className="font-bold text-white underline underline-offset-4"
+            className="font-medium text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"
             href="/terms"
           >
             Terms
           </Link>{" "}
           and{" "}
           <Link
-            className="font-bold text-white underline underline-offset-4"
+            className="font-medium text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"
             href="/privacy"
           >
             Privacy Policy
           </Link>
           .
         </CheckboxField>
+
         <CheckboxField
           error={errors.feeAccepted?.message}
           registration={register("feeAccepted")}
         >
-          I understand the {signupFeeLabel} fee is for platform access only.
+          I understand there is a one-time platform access fee via Mobile Money.
         </CheckboxField>
       </div>
 
-      <SubmitButton
-        pending={isSubmitting}
-        pendingLabel={demoMode ? "Validating…" : "Opening checkout…"}
-        label={
-          demoMode
-            ? "Preview signup · no charge"
-            : `Pay with Mobile Money · ${signupFeeLabel}`
-        }
-      />
-
-      <p className="flex items-start gap-2 text-xs leading-5 text-white/38">
-        <ShieldCheck
-          className="mt-0.5 size-3.5 shrink-0 text-success"
-          aria-hidden="true"
-        />
-        Your MoMo number is stored privately for account and payment matching.
-        PINs and payment approvals are handled only by Paystack.
-      </p>
-
-      <p className="text-center text-sm text-white/48">
-        Already have an account?{" "}
-        <Link
-          href="/login"
-          className="font-black text-signal underline underline-offset-4"
+      {/* CTA */}
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-[#FFCA27] py-3.5 font-semibold text-black transition-all duration-200 hover:bg-[#E5B41E] disabled:cursor-wait disabled:opacity-50"
         >
-          Log in
-        </Link>
-      </p>
+          {isSubmitting ? (
+            <div className="flex items-center gap-2 py-1">
+              <LoaderCircle className="size-4 animate-spin text-black" />
+              <span className="text-[15px] font-semibold">
+                {demoMode ? "Validating…" : "Opening checkout…"}
+              </span>
+            </div>
+          ) : (
+            <>
+              <span className="block text-[15px]">
+                {demoMode
+                  ? "Preview signup · no charge"
+                  : `Pay with Mobile Money · ${signupFeeLabel}`}
+              </span>
+              <span className="mt-0.5 block text-[11px] font-medium opacity-75">
+                Access fee only — not a betting stake
+              </span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Login Link */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-[#94A3B8]">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"
+          >
+            Log in
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }
@@ -470,6 +443,7 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
       redirectTo,
     },
   });
+
   const onSubmit = handleSubmit(async (values) => {
     const response = await loginAction(values);
     setResult(response);
@@ -483,57 +457,81 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5">
+    <form onSubmit={onSubmit} noValidate className="space-y-5">
       <FormStatus result={result} />
       <input type="hidden" {...register("redirectTo")} />
+
       <TextField
         id="login-identifier"
-        label="Email address or username"
+        label="Email Address or Username"
         inputMode="text"
         autoComplete="username"
-        placeholder="you@example.com or username"
+        placeholder="name@example.com or username"
         error={errors.identifier?.message}
         registration={register("identifier")}
-        icon={UserRound}
       />
+
       <PasswordField
         id="login-password"
         label="Password"
         autoComplete="current-password"
-        placeholder="Enter your password"
+        placeholder="••••••••"
         error={errors.password?.message}
         registration={register("password")}
       />
-      <div className="flex items-center justify-between gap-4 text-sm">
-        <label className="flex cursor-pointer items-center gap-2 text-white/52">
-          <input
-            type="checkbox"
-            className="size-4 accent-signal"
-            {...register("remember")}
-          />
-          Remember me
+
+      <div className="flex items-center justify-between gap-4 pt-1 text-sm">
+        <label className="group flex cursor-pointer items-center gap-2.5 text-[#94A3B8] transition-colors hover:text-white">
+          <span className="relative grid size-4 shrink-0 place-items-center">
+            <input
+              type="checkbox"
+              className="peer size-4 cursor-pointer appearance-none rounded border border-white/10 bg-transparent transition-all duration-200 checked:border-[#FFCA27] checked:bg-[#FFCA27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFCA27]/50"
+              {...register("remember")}
+            />
+            <Check
+              className="pointer-events-none absolute size-2.5 scale-75 text-black opacity-0 transition-transform peer-checked:scale-100 peer-checked:opacity-100"
+              strokeWidth={3}
+              aria-hidden="true"
+            />
+          </span>
+          <span className="text-sm">Remember me</span>
         </label>
         <Link
           href="/forgot-password"
-          className="font-bold text-white/70 underline underline-offset-4 hover:text-white"
+          className="text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"
         >
           Forgot password?
         </Link>
       </div>
-      <SubmitButton
-        pending={isSubmitting}
-        pendingLabel="Signing in…"
-        label="Log in securely"
-      />
-      <p className="text-center text-sm text-white/48">
-        New to Instant Seeker?{" "}
-        <Link
-          href="/signup"
-          className="font-black text-signal underline underline-offset-4"
+
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="flex w-full items-center justify-center rounded-lg bg-[#FFCA27] py-3.5 font-semibold text-black transition-all duration-200 hover:bg-[#E5B41E] disabled:cursor-wait disabled:opacity-50"
         >
-          Create an account
-        </Link>
-      </p>
+          {isSubmitting ? (
+            <div className="flex items-center gap-2 py-0.5">
+              <LoaderCircle className="size-4 animate-spin text-black" />
+              <span className="text-sm font-semibold">Signing in…</span>
+            </div>
+          ) : (
+            <span className="text-sm font-semibold">Log in securely</span>
+          )}
+        </button>
+      </div>
+
+      <div className="mt-8 text-center">
+        <p className="text-sm text-[#94A3B8]">
+          New to Instant Seeker?{" "}
+          <Link
+            href="/signup"
+            className="font-medium text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"
+          >
+            Create an account
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }
