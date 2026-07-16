@@ -87,7 +87,11 @@ function TextField({
             .filter(Boolean)
             .join(" ") || undefined
         }
-        className="w-full rounded-lg border border-white/10 bg-[#07080A] px-4 py-3 text-sm text-white placeholder-white/20 transition-all focus:border-[#FFCA27] focus:ring-1 focus:ring-[#FFCA27]/50 focus:outline-none"
+        className={`auth-input w-full rounded-lg border bg-[#07080A] px-4 py-3 text-sm text-white placeholder-white/20 transition-all focus:ring-1 focus:outline-none ${
+          error
+            ? "border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/30"
+            : "border-white/10 focus:border-[#FFCA27] focus:ring-[#FFCA27]/50"
+        }`}
         {...registration}
       />
       {hint ? (
@@ -132,7 +136,11 @@ function PasswordField({
           placeholder={placeholder}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="w-full rounded-lg border border-white/10 bg-[#07080A] py-3 pr-11 pl-4 text-sm text-white placeholder-white/20 transition-all focus:border-[#FFCA27] focus:ring-1 focus:ring-[#FFCA27]/50 focus:outline-none"
+          className={`auth-input w-full rounded-lg border bg-[#07080A] py-3 pr-11 pl-4 text-sm text-white placeholder-white/20 transition-all focus:ring-1 focus:outline-none ${
+            error
+              ? "border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/30"
+              : "border-white/10 focus:border-[#FFCA27] focus:ring-[#FFCA27]/50"
+          }`}
           {...registration}
         />
         <button
@@ -463,10 +471,10 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
       <TextField
         id="login-identifier"
-        label="Email Address or Username"
+        label="Email or username"
         inputMode="text"
         autoComplete="username"
-        placeholder="name@example.com or username"
+        placeholder="Enter your email or username"
         error={errors.identifier?.message}
         registration={register("identifier")}
       />
@@ -516,14 +524,14 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
               <span className="text-sm font-semibold">Signing in…</span>
             </div>
           ) : (
-            <span className="text-sm font-semibold">Log in securely</span>
+            <span className="text-sm font-semibold">Sign in</span>
           )}
         </button>
       </div>
 
       <div className="mt-8 text-center">
         <p className="text-sm text-[#94A3B8]">
-          New to Instant Seeker?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/signup"
             className="font-medium text-white underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#FFCA27]"

@@ -1,5 +1,12 @@
 import type { ReactNode } from "react";
-import { ArrowLeft, EyeOff, Hexagon, Target, Wallet } from "lucide-react";
+import {
+  ArrowLeft,
+  EyeOff,
+  Hexagon,
+  ShieldCheck,
+  Target,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { isDemoMode } from "@/lib/config";
 
@@ -71,44 +78,54 @@ export function AuthShell({
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 backdrop-blur-sm">
                 <div className="h-1.5 w-1.5 rounded-full bg-[#FFCA27]"></div>
                 <span className="text-xs font-medium tracking-wide text-[#94A3B8] uppercase">
-                  AI-Powered Analysis · Member Access
+                  Private AI Workspace
                 </span>
               </div>
 
               <h1 className="font-heading text-4xl leading-[1.15] font-semibold text-white xl:text-5xl">
-                Welcome back to your workspace.
+                Welcome back.
               </h1>
 
               <p className="text-lg leading-relaxed text-[#94A3B8]">
-                Log in to review your private reports, upload new screenshots,
-                and continue analyzing selections.
+                Securely sign in to access your intelligence dashboard and
+                continue analyzing Instant Virtuals matches.
               </p>
             </div>
           )}
 
           {/* Bullet Points */}
           <div className="space-y-6 pt-6">
-            {[
-              {
-                icon: EyeOff,
-                title: "Screenshot Privacy",
-                desc: "Your uploads are analyzed instantly and never stored permanently.",
-              },
-              {
-                icon: Wallet,
-                title: isSignup ? "Mobile Money Access" : "Secure Workspace",
-                desc: isSignup
-                  ? "Secure, seamless GHS transactions supported natively."
-                  : "Access your private workspace and reports securely.",
-              },
-              {
-                icon: Target,
-                title: isSignup ? "Responsible Estimates" : "Logical Choices",
-                desc: isSignup
-                  ? "Data-driven pattern recognition, tailored for logical decisions."
-                  : "Get analytical insights based on historical match patterns.",
-              },
-            ].map((item, i) => (
+            {(isSignup
+              ? [
+                  {
+                    icon: EyeOff,
+                    title: "Screenshot Privacy",
+                    desc: "Your uploads are analyzed instantly and never stored permanently.",
+                  },
+                  {
+                    icon: Wallet,
+                    title: "Mobile Money Access",
+                    desc: "Secure, seamless GHS transactions supported natively.",
+                  },
+                  {
+                    icon: Target,
+                    title: "Responsible Estimates",
+                    desc: "Data-driven pattern recognition, tailored for logical decisions.",
+                  },
+                ]
+              : [
+                  {
+                    icon: ShieldCheck,
+                    title: "Secure Sign-in",
+                    desc: "Encrypted authentication protects your private workspace.",
+                  },
+                  {
+                    icon: EyeOff,
+                    title: "Analysis Privacy",
+                    desc: "Your match screenshots and reports remain private to your account.",
+                  },
+                ]
+            ).map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-white/5 bg-[#101216] text-[#FFCA27]">
                   <item.icon size={20} strokeWidth={1.5} />
@@ -166,7 +183,7 @@ export function AuthShell({
             </span>
           </Link>
           <h1 className="font-heading mb-3 text-3xl font-semibold text-white">
-            {isSignup ? "Create your account" : "Welcome back"}
+            {isSignup ? "Create your account" : "Sign in"}
           </h1>
           <p className="text-sm text-[#94A3B8]">{description}</p>
         </div>
@@ -207,33 +224,29 @@ export function AuthShell({
 
         {/* Mobile Trust Points & Note (Hidden on Desktop) */}
         <div className="animate-fade-up mt-12 w-full max-w-md space-y-8 delay-200 lg:hidden">
-          <div className="grid grid-cols-1 gap-4">
-            {[
-              { icon: EyeOff, title: "Screenshot Privacy" },
-              {
-                icon: Wallet,
-                title: isSignup ? "Mobile Money Access" : "Secure Workspace",
-              },
-              {
-                icon: Target,
-                title: isSignup ? "Responsible Estimates" : "Logical Choices",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 rounded-lg border border-white/5 bg-[#101216]/50 p-3"
-              >
-                <item.icon
-                  size={16}
-                  className="text-[#FFCA27]"
-                  strokeWidth={2}
-                />
-                <span className="text-sm font-medium text-white">
-                  {item.title}
-                </span>
-              </div>
-            ))}
-          </div>
+          {isSignup ? (
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { icon: EyeOff, title: "Screenshot Privacy" },
+                { icon: Wallet, title: "Mobile Money Access" },
+                { icon: Target, title: "Responsible Estimates" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 rounded-lg border border-white/5 bg-[#101216]/50 p-3"
+                >
+                  <item.icon
+                    size={16}
+                    className="text-[#FFCA27]"
+                    strokeWidth={2}
+                  />
+                  <span className="text-sm font-medium text-white">
+                    {item.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
           <p className="text-center text-[11px] leading-relaxed text-[#64748B]">
             Estimates only. Instant Seeker provides analytical perspectives
             based on historical patterns. The user remains entirely responsible
