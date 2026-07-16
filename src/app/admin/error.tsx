@@ -20,6 +20,14 @@ export default function AdminError({
           The request failed without exposing private diagnostic detail. Retry
           the server-rendered view or inspect System Health.
         </p>
+        {error.message &&
+        /^(Unable to load|The server-side Supabase|Supabase is not configured)/i.test(
+          error.message,
+        ) ? (
+          <p className="mt-3 rounded-md bg-rose-50 px-3 py-2 font-mono text-xs break-words text-rose-800">
+            {error.message}
+          </p>
+        ) : null}
         {error.digest ? (
           <p className="mt-3 font-mono text-xs text-black/35">
             Reference {error.digest}

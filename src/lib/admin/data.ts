@@ -315,7 +315,7 @@ export async function getUsersData(
   let query = admin
     .from("profiles")
     .select(
-      "id, display_name, email, avatar_url, role, account_status, age_confirmed_at, created_at, last_active_at, analyses(count), reviews(count), win_records(count)",
+      "id, display_name, email, avatar_url, role, account_status, age_confirmed_at, created_at, last_active_at, analyses!user_id(count), reviews!user_id(count), win_records!user_id(count)",
       { count: "exact" },
     );
   if (search)
