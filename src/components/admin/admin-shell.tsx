@@ -4,12 +4,12 @@ import {
   Bell,
   ChevronRight,
   Command,
+  Hexagon,
   LogOut,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
-  ShieldCheck,
   UserRound,
   X,
 } from "lucide-react";
@@ -22,7 +22,6 @@ import { adminNavigation } from "@/lib/admin/navigation";
 import { roleHasPermission } from "@/lib/admin/permissions";
 import type { SessionUser } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Logo } from "@/components/ui/logo";
 import { AdminRealtimeBridge } from "@/components/admin/admin-realtime-bridge";
 import { AdminPageTransition } from "@/components/admin/admin-motion";
 
@@ -32,10 +31,10 @@ function AdminBreadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb" className="min-w-0">
-      <ol className="flex min-w-0 items-center gap-1 text-xs text-black/50">
+      <ol className="flex min-w-0 items-center gap-1 text-xs text-white/42">
         <li>
-          <Link className="font-bold hover:text-black" href="/admin">
-            Admin
+          <Link className="font-bold hover:text-white" href="/admin">
+            Instant Seeker
           </Link>
         </li>
         {parts.map((part, index) => {
@@ -45,12 +44,12 @@ function AdminBreadcrumbs() {
             <li key={href} className="flex min-w-0 items-center gap-1">
               <ChevronRight className="size-3 shrink-0" aria-hidden="true" />
               {index === parts.length - 1 ? (
-                <span className="truncate font-bold text-black capitalize">
+                <span className="truncate font-bold text-white capitalize">
                   {label}
                 </span>
               ) : (
                 <Link
-                  className="truncate capitalize hover:text-black"
+                  className="truncate capitalize hover:text-white"
                   href={href}
                 >
                   {label}
@@ -108,10 +107,10 @@ function CommandMenu({
         onClose();
       }}
       onClose={onClose}
-      className="admin-dialog m-auto w-[min(42rem,calc(100%-2rem))] rounded-lg border border-black/15 bg-white p-0 text-ink shadow-2xl backdrop:bg-black/65"
+      className="admin-dialog m-auto w-[min(42rem,calc(100%-2rem))] rounded-lg border border-white/10 bg-[#101216] p-0 text-white shadow-2xl backdrop:bg-black/75"
     >
-      <div className="flex items-center gap-3 border-b border-black/10 bg-black/[0.015] px-4">
-        <Search className="size-5 text-black/40" aria-hidden="true" />
+      <div className="flex items-center gap-3 border-b border-white/8 bg-white/[0.015] px-4">
+        <Search className="size-5 text-white/40" aria-hidden="true" />
         <label htmlFor="admin-command-search" className="sr-only">
           Search admin destinations
         </label>
@@ -121,13 +120,13 @@ function CommandMenu({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search pages and tools"
-          className="min-h-14 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-black/35"
+          className="min-h-14 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/30"
         />
         <button
           type="button"
           onClick={onClose}
           aria-label="Close command menu"
-          className="grid size-9 place-items-center rounded-full hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="grid size-9 place-items-center rounded-full text-white/55 hover:bg-white/6 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
         >
           <X className="size-4" aria-hidden="true" />
         </button>
@@ -139,22 +138,19 @@ function CommandMenu({
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="admin-interactive flex min-h-12 items-center gap-3 rounded-md px-3 text-sm font-bold hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink"
+              className="admin-interactive flex min-h-12 items-center gap-3 rounded-md px-3 text-sm font-bold text-white/72 hover:bg-white/6 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal"
             >
-              <item.icon
-                className="size-4 text-signal-ink"
-                aria-hidden="true"
-              />
+              <item.icon className="size-4 text-signal" aria-hidden="true" />
               {item.label}
             </Link>
           ))
         ) : (
-          <p className="px-3 py-8 text-center text-sm text-black/50">
+          <p className="px-3 py-8 text-center text-sm text-white/45">
             No matching admin destination.
           </p>
         )}
       </div>
-      <p className="border-t border-black/10 px-4 py-3 text-xs text-black/45">
+      <p className="border-t border-white/8 px-4 py-3 text-xs text-white/38">
         Results are limited to your current permissions.
       </p>
     </dialog>
@@ -192,9 +188,17 @@ export function AdminShell({
 
   const navigation = (
     <>
-      <div className="flex min-h-18 items-center justify-between border-b border-white/10 px-4">
-        <div className={cn(collapsed && "lg:hidden")}>
-          <Logo inverse compactOnMobile={false} />
+      <div className="flex min-h-18 items-center justify-between border-b border-white/8 px-4">
+        <div
+          className={cn("flex items-center gap-3", collapsed && "lg:hidden")}
+        >
+          <span className="relative grid size-8 place-items-center text-signal">
+            <Hexagon className="absolute inset-0 size-8" strokeWidth={1.5} />
+            <span className="size-2 rounded-sm bg-signal" />
+          </span>
+          <span className="text-lg font-black tracking-wide text-white">
+            Seeker<span className="text-signal">OS</span>
+          </span>
         </div>
         <button
           type="button"
@@ -219,6 +223,13 @@ export function AdminShell({
         >
           <X className="size-5" aria-hidden="true" />
         </button>
+      </div>
+      <div className={cn("px-4 pt-4", collapsed && "lg:hidden")}>
+        <span className="flex min-h-8 items-center justify-center rounded-md border border-signal/18 bg-signal/8 px-3 text-[10px] font-black tracking-wide text-signal uppercase">
+          {user.role === "super_admin"
+            ? "Super Admin Privileges"
+            : "Admin Privileges"}
+        </span>
       </div>
       <nav
         aria-label="Admin navigation"
@@ -252,39 +263,36 @@ export function AdminShell({
           );
         })}
       </nav>
-      <div className="border-t border-white/10 p-3">
+      <div className="border-t border-white/8 p-3">
         <div
           className={cn(
-            "rounded-md border border-white/10 bg-white/[0.035] p-3",
+            "flex items-center gap-3 rounded-md border border-white/8 bg-white/[0.025] p-3",
             collapsed && "lg:grid lg:place-items-center lg:p-2",
           )}
         >
-          <ShieldCheck className="size-4 text-signal" aria-hidden="true" />
-          <p
-            className={cn(
-              "mt-2 text-xs font-bold text-white",
-              collapsed && "lg:sr-only",
-            )}
-          >
-            {user.role === "super_admin"
-              ? "Super administrator"
-              : "Administrator"}
-          </p>
-          <p
-            className={cn(
-              "mt-1 text-xs text-white/45",
-              collapsed && "lg:sr-only",
-            )}
-          >
-            Server-authorized session
-          </p>
+          <span className="grid size-8 shrink-0 place-items-center rounded-md bg-signal text-xs font-black text-ink">
+            {user.displayName
+              .split(/\s+/)
+              .slice(0, 2)
+              .map((part) => part[0])
+              .join("")
+              .toUpperCase() || "SA"}
+          </span>
+          <div className={cn("min-w-0", collapsed && "lg:sr-only")}>
+            <p className="truncate text-xs font-bold text-white">
+              {user.displayName}
+            </p>
+            <p className="mt-1 truncate text-[10px] text-white/38">
+              {user.email}
+            </p>
+          </div>
         </div>
       </div>
     </>
   );
 
   return (
-    <div className="admin-app min-h-screen bg-[#f5f5f2] text-ink">
+    <div className="admin-app min-h-screen bg-[#07080A] text-white">
       <AdminRealtimeBridge disabled={user.demo} />
       <div
         className={cn(
@@ -292,7 +300,7 @@ export function AdminShell({
           collapsed ? "lg:grid-cols-[76px_1fr]" : "lg:grid-cols-[264px_1fr]",
         )}
       >
-        <aside className="sticky top-0 hidden h-screen flex-col overflow-hidden border-r border-white/8 bg-ink text-white lg:flex">
+        <aside className="sticky top-0 hidden h-screen flex-col overflow-hidden border-r border-white/8 bg-[#07080A] text-white lg:flex">
           {navigation}
         </aside>
         <AnimatePresence>
@@ -305,13 +313,13 @@ export function AdminShell({
               transition={{ duration: reduceMotion ? 0 : 0.2 }}
             >
               <button
-                className="absolute inset-0 bg-black/68"
+                className="absolute inset-0 bg-black/78 backdrop-blur-sm"
                 type="button"
                 aria-label="Close admin navigation"
                 onClick={() => setMobileOpen(false)}
               />
               <motion.aside
-                className="relative flex h-full w-[min(19rem,88vw)] flex-col border-r border-white/10 bg-ink text-white shadow-2xl"
+                className="relative flex h-full w-[min(19rem,88vw)] flex-col border-r border-white/10 bg-[#07080A] text-white shadow-2xl"
                 initial={reduceMotion ? false : { x: "-100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
@@ -326,12 +334,12 @@ export function AdminShell({
           ) : null}
         </AnimatePresence>
         <div className="min-w-0">
-          <header className="sticky top-0 z-40 border-b border-black/8 bg-white/88 shadow-[0_1px_0_rgba(0,0,0,0.025)] backdrop-blur-xl">
+          <header className="sticky top-0 z-40 border-b border-white/8 bg-[#07080A]/88 shadow-[0_1px_0_rgba(255,255,255,0.025)] backdrop-blur-xl">
             <div className="flex min-h-18 items-center gap-3 px-4 sm:px-6 xl:px-8">
               <button
                 type="button"
                 onClick={() => setMobileOpen(true)}
-                className="admin-interactive grid size-10 shrink-0 place-items-center rounded-full border border-black/10 bg-white hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:hidden"
+                className="admin-interactive grid size-10 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.025] text-white/65 hover:bg-white/7 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal lg:hidden"
                 aria-label="Open admin navigation"
               >
                 <Menu className="size-5" aria-hidden="true" />
@@ -341,56 +349,56 @@ export function AdminShell({
                 <button
                   type="button"
                   onClick={() => setCommandOpen(true)}
-                  className="admin-interactive hidden min-h-10 min-w-52 items-center gap-2 rounded-full border border-black/10 bg-black/[0.025] px-3 text-left text-xs text-black/45 hover:border-black/20 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink md:flex"
+                  className="admin-interactive hidden min-h-10 min-w-56 items-center gap-2 rounded-lg border border-white/8 bg-white/[0.025] px-3 text-left text-xs text-white/38 hover:border-white/15 hover:bg-white/5 hover:text-white/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal md:flex"
                 >
                   <Search className="size-4" aria-hidden="true" />
                   <span className="flex-1">Search admin</span>
-                  <span className="inline-flex items-center gap-1 rounded border border-black/10 bg-white px-1.5 py-0.5 font-bold text-black/50">
+                  <span className="inline-flex items-center gap-1 rounded border border-white/8 bg-white/[0.035] px-1.5 py-0.5 font-bold text-white/45">
                     <Command className="size-3" aria-hidden="true" />K
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setCommandOpen(true)}
-                  className="admin-interactive grid size-10 place-items-center rounded-full border border-black/10 bg-white hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink md:hidden"
+                  className="admin-interactive grid size-10 place-items-center rounded-lg border border-white/10 bg-white/[0.025] text-white/65 hover:bg-white/7 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal md:hidden"
                   aria-label="Search admin"
                 >
                   <Search className="size-4" aria-hidden="true" />
                 </button>
                 <Link
                   href="/admin/system-health"
-                  className="admin-interactive relative grid size-10 place-items-center rounded-full border border-black/10 bg-white hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                  className="admin-interactive relative grid size-10 place-items-center rounded-lg border border-white/10 bg-white/[0.025] text-white/65 hover:bg-white/7 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
                   aria-label={`${notificationCount} unresolved system notifications`}
                   title="System notifications"
                 >
                   <Bell className="size-4" aria-hidden="true" />
                   {notificationCount > 0 ? (
-                    <span className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full border-2 border-white bg-alert px-1 text-[10px] leading-4 font-black text-white">
+                    <span className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full border-2 border-[#07080A] bg-alert px-1 text-[10px] leading-4 font-black text-white">
                       {notificationCount > 99 ? "99+" : notificationCount}
                     </span>
                   ) : null}
                 </Link>
                 <details className="relative">
-                  <summary className="admin-interactive flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-full border border-black/10 bg-white pr-3 pl-1 hover:bg-black/[0.025] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                    <span className="grid size-8 place-items-center rounded-full bg-ink text-signal">
+                  <summary className="admin-interactive flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-lg border border-white/10 bg-white/[0.025] pr-3 pl-1 text-white hover:bg-white/6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
+                    <span className="grid size-8 place-items-center rounded-md bg-signal text-ink">
                       <UserRound className="size-4" aria-hidden="true" />
                     </span>
                     <span className="hidden max-w-28 truncate text-xs font-black sm:block">
                       {user.displayName}
                     </span>
                   </summary>
-                  <div className="admin-menu absolute right-0 mt-2 w-64 rounded-lg border border-black/10 bg-white p-2 shadow-xl">
-                    <div className="border-b border-black/10 px-3 py-3">
+                  <div className="admin-menu absolute right-0 mt-2 w-64 rounded-lg border border-white/10 bg-[#101216] p-2 text-white shadow-xl">
+                    <div className="border-b border-white/8 px-3 py-3">
                       <p className="truncate text-sm font-black">
                         {user.displayName}
                       </p>
-                      <p className="mt-1 truncate text-xs text-black/45">
+                      <p className="mt-1 truncate text-xs text-white/40">
                         {user.email}
                       </p>
                     </div>
                     <Link
                       href="/profile"
-                      className="admin-interactive mt-2 flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-bold hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink"
+                      className="admin-interactive mt-2 flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-bold hover:bg-white/6 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal"
                     >
                       <UserRound className="size-4" aria-hidden="true" />
                       Account profile
@@ -398,7 +406,7 @@ export function AdminShell({
                     <form action={signOutAction}>
                       <button
                         type="submit"
-                        className="admin-interactive flex min-h-10 w-full items-center gap-2 rounded-md px-3 text-left text-sm font-bold text-alert hover:bg-alert/5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-alert"
+                        className="admin-interactive flex min-h-10 w-full items-center gap-2 rounded-md px-3 text-left text-sm font-bold text-alert hover:bg-alert/8 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-alert"
                       >
                         <LogOut className="size-4" aria-hidden="true" />
                         Sign out
@@ -417,7 +425,7 @@ export function AdminShell({
           ) : null}
           <main
             id="main-content"
-            className="min-w-0 px-4 py-7 sm:px-6 xl:px-8 xl:py-9"
+            className="admin-workspace min-w-0 px-4 py-7 sm:px-6 xl:px-8 xl:py-9"
           >
             <AdminPageTransition>{children}</AdminPageTransition>
           </main>

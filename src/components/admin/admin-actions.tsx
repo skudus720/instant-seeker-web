@@ -231,8 +231,8 @@ export function AdminNotice({
       className={cn(
         "admin-notice mt-5 flex items-start gap-3 rounded-lg border p-4 text-sm",
         success
-          ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-          : "border-rose-200 bg-rose-50 text-rose-900",
+          ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+          : "border-rose-500/20 bg-rose-500/10 text-rose-300",
       )}
     >
       {success ? (

@@ -289,12 +289,27 @@ a {
 }
 
 .admin-app {
-  --admin-canvas: #f5f5f2;
-  --admin-panel: #ffffff;
-  --admin-line: rgba(0, 0, 0, 0.09);
-  --admin-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.035), 0 10px 32px rgba(0, 0, 0, 0.025);
+  --admin-canvas: #07080a;
+  --admin-panel: #101216;
+  --admin-line: rgba(255, 255, 255, 0.08);
+  --admin-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 44px rgba(0, 0, 0, 0.16);
   background: var(--admin-canvas);
+  color: #ffffff;
+  font-family:
+    "Plus Jakarta Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.admin-app :where(h1, h2, h3, h4) {
+  font-family: "Outfit", sans-serif;
+}
+
+.admin-workspace {
+  min-height: calc(100vh - 4.5rem);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 .admin-surface {
@@ -308,10 +323,10 @@ a {
 @media (hover: hover) {
   article.admin-surface:hover {
     transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.17);
+    border-color: rgba(255, 202, 39, 0.18);
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.04),
-      0 16px 38px rgba(0, 0, 0, 0.055);
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 18px 42px rgba(0, 0, 0, 0.24);
   }
 }
 
@@ -398,7 +413,7 @@ a {
 }
 
 .admin-list-row:hover {
-  background: rgba(0, 0, 0, 0.022);
+  background: rgba(255, 255, 255, 0.022);
 }
 
 .admin-table-scroll {
@@ -410,7 +425,7 @@ a {
   position: sticky;
   z-index: 1;
   top: 0;
-  background: #f7f7f4;
+  background: #0b0d10;
 }
 
 .admin-table tbody tr {
@@ -419,7 +434,7 @@ a {
 
 .admin-table tbody tr:hover,
 .admin-table tbody tr:focus-within {
-  background: rgba(0, 0, 0, 0.022);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .admin-table tbody tr:last-child td {
@@ -429,11 +444,11 @@ a {
 .admin-empty-state {
   background-image: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.018) 25%,
+    rgba(255, 255, 255, 0.012) 25%,
     transparent 25%,
     transparent 50%,
-    rgba(0, 0, 0, 0.018) 50%,
-    rgba(0, 0, 0, 0.018) 75%,
+    rgba(255, 255, 255, 0.012) 50%,
+    rgba(255, 255, 255, 0.012) 75%,
     transparent 75%,
     transparent
   );
@@ -443,7 +458,7 @@ a {
 .admin-chart-grid {
   background-image: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.055) 1px,
+    rgba(255, 255, 255, 0.055) 1px,
     transparent 1px
   );
   background-size: 100% 25%;
@@ -463,9 +478,9 @@ a {
 .admin-skeleton {
   background: linear-gradient(
     90deg,
-    rgba(0, 0, 0, 0.055) 20%,
-    rgba(0, 0, 0, 0.095) 50%,
-    rgba(0, 0, 0, 0.055) 80%
+    rgba(255, 255, 255, 0.045) 20%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.045) 80%
   );
   background-size: 240% 100%;
   animation: admin-skeleton-shimmer 1.4s ease-in-out infinite;
@@ -479,6 +494,9 @@ a {
 .admin-app input,
 .admin-app textarea,
 .admin-app select {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: #07080a;
+  color: #ffffff;
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -488,7 +506,69 @@ a {
 .admin-app input:hover,
 .admin-app textarea:hover,
 .admin-app select:hover {
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-app input::placeholder,
+.admin-app textarea::placeholder {
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.admin-app option {
+  background: #101216;
+  color: #ffffff;
+}
+
+.admin-app .bg-white {
+  background-color: #101216 !important;
+}
+
+.admin-app [class*="bg-black/"] {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+}
+
+.admin-app [class*="border-black/"] {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+.admin-app [class*="text-black/"] {
+  color: rgba(148, 163, 184, 0.78) !important;
+}
+
+.admin-app .text-black,
+.admin-app .text-ink {
+  color: #ffffff !important;
+}
+
+.admin-app [class*="hover:bg-black/"]:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.admin-app [class*="hover:text-black"]:hover {
+  color: #ffffff !important;
+}
+
+.admin-app [class*="focus-visible:outline-ink"]:focus-visible {
+  outline-color: var(--signal) !important;
+}
+
+.admin-app button.bg-ink,
+.admin-app a.bg-ink {
+  background-color: var(--signal) !important;
+  color: #07080a !important;
+}
+
+.admin-app button.bg-ink:hover,
+.admin-app a.bg-ink:hover {
+  background-color: #e5b41e !important;
+}
+
+.admin-app dialog {
+  color: #ffffff;
+}
+
+.admin-app details > summary::-webkit-details-marker {
+  display: none;
 }
 
 .sub-admin-shell main {

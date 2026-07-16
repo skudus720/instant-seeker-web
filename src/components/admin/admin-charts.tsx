@@ -41,7 +41,7 @@ export function AdminBarChart({
             title={`${point.label}: ${primaryLabel} ${point.value}${secondaryLabel ? `, ${secondaryLabel} ${point.secondary || 0}` : ""}`}
           >
             <span
-              className="admin-chart-bar w-full max-w-3 rounded-t-sm bg-ink"
+              className="admin-chart-bar w-full max-w-3 rounded-t-sm bg-[#FFCA27]/80 transition-colors hover:bg-[#FFCA27]"
               style={{
                 height: `${Math.max(point.value ? 4 : 0, (point.value / max) * 100)}%`,
                 animationDelay: `${index * 18}ms`,
@@ -65,7 +65,7 @@ export function AdminBarChart({
       </div>
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-black/55">
         <span className="inline-flex items-center gap-2">
-          <span className="size-2 bg-ink" /> {primaryLabel}
+          <span className="size-2 bg-[#FFCA27]" /> {primaryLabel}
         </span>
         {secondaryLabel ? (
           <span className="inline-flex items-center gap-2">
@@ -127,7 +127,7 @@ export function AdminDistributionChart({
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/7">
               <div
-                className={`admin-progress-fill ${item.tone || "h-full bg-ink"}`}
+                className={`admin-progress-fill ${item.tone || "h-full bg-[#FFCA27]"}`}
                 style={{
                   width: `${percent}%`,
                   animationDelay: `${index * 70}ms`,

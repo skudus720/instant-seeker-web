@@ -15,18 +15,18 @@ export function AdminPageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="admin-page-header flex flex-col gap-5 border-b border-black/8 pb-6 lg:flex-row lg:items-end lg:justify-between">
+    <div className="admin-page-header flex flex-col gap-5 border-b border-white/8 pb-6 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-3xl">
         {eyebrow ? (
-          <p className="flex items-center gap-2 text-[11px] font-black text-signal-ink uppercase">
-            <span className="h-px w-5 bg-signal-ink/55" aria-hidden="true" />
+          <p className="flex items-center gap-2 text-[11px] font-black text-signal uppercase">
+            <span className="h-px w-5 bg-signal/65" aria-hidden="true" />
             <span>{eyebrow}</span>
           </p>
         ) : null}
-        <h1 className="mt-2 text-2xl font-black text-ink sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-black text-white sm:text-3xl">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-black/55">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#94A3B8]">
           {description}
         </p>
       </div>
@@ -49,25 +49,25 @@ export function AdminMetricCard({
   tone?: "default" | "success" | "warning" | "danger";
 }) {
   const toneClass = {
-    default: "bg-ink text-signal",
-    success: "bg-emerald-700 text-white",
-    warning: "bg-signal text-ink",
-    danger: "bg-alert text-white",
+    default: "border border-signal/18 bg-signal/8 text-signal",
+    success: "border border-emerald-500/18 bg-emerald-500/10 text-emerald-400",
+    warning: "border border-amber-500/18 bg-amber-500/10 text-amber-300",
+    danger: "border border-alert/18 bg-alert/10 text-alert",
   }[tone];
   const accentClass = {
-    default: "bg-ink",
+    default: "bg-signal",
     success: "bg-emerald-600",
     warning: "bg-signal",
     danger: "bg-alert",
   }[tone];
   return (
-    <article className="admin-surface group relative min-w-0 overflow-hidden rounded-lg border border-black/10 bg-white p-5">
+    <article className="admin-surface group relative min-w-0 overflow-hidden rounded-lg border border-white/8 bg-[#101216] p-5">
       <span
         className={cn("absolute inset-x-0 top-0 h-0.5", accentClass)}
         aria-hidden="true"
       />
       <div className="flex items-start justify-between gap-3">
-        <p className="pt-1 text-[11px] leading-4 font-black text-black/45 uppercase">
+        <p className="pt-1 text-[11px] leading-4 font-black text-[#94A3B8] uppercase">
           {label}
         </p>
         <div
@@ -79,11 +79,11 @@ export function AdminMetricCard({
           <Icon className="size-4" aria-hidden="true" />
         </div>
       </div>
-      <p className="mt-5 truncate text-2xl font-black text-ink tabular-nums">
+      <p className="mt-5 truncate text-2xl font-black text-white tabular-nums">
         {value}
       </p>
       {detail ? (
-        <p className="mt-2 min-h-4 text-xs text-black/45">{detail}</p>
+        <p className="mt-2 min-h-4 text-xs text-[#64748B]">{detail}</p>
       ) : null}
     </article>
   );
@@ -105,18 +105,18 @@ export function AdminPanel({
   return (
     <section
       className={cn(
-        "admin-surface overflow-hidden rounded-lg border border-black/10 bg-white",
+        "admin-surface overflow-hidden rounded-lg border border-white/8 bg-[#101216]",
         className,
       )}
     >
       {title || description || action ? (
-        <div className="flex flex-col gap-3 border-b border-black/8 bg-black/[0.012] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-white/8 bg-white/[0.012] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             {title ? (
-              <h2 className="text-base font-black text-ink">{title}</h2>
+              <h2 className="text-base font-black text-white">{title}</h2>
             ) : null}
             {description ? (
-              <p className="mt-1 text-xs leading-5 text-black/48">
+              <p className="mt-1 text-xs leading-5 text-[#64748B]">
                 {description}
               </p>
             ) : null}
@@ -130,25 +130,25 @@ export function AdminPanel({
 }
 
 const statusStyles: Record<string, string> = {
-  active: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  completed: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  verified: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  approved: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  published: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  healthy: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  pending: "border-amber-200 bg-amber-50 text-amber-900",
-  processing: "border-blue-200 bg-blue-50 text-blue-800",
-  under_review: "border-blue-200 bg-blue-50 text-blue-800",
-  warning: "border-amber-200 bg-amber-50 text-amber-900",
-  suspended: "border-rose-200 bg-rose-50 text-rose-800",
-  failed: "border-rose-200 bg-rose-50 text-rose-800",
-  rejected: "border-rose-200 bg-rose-50 text-rose-800",
-  critical: "border-rose-200 bg-rose-50 text-rose-800",
-  error: "border-rose-200 bg-rose-50 text-rose-800",
-  hidden: "border-neutral-200 bg-neutral-100 text-neutral-700",
-  inactive: "border-neutral-200 bg-neutral-100 text-neutral-700",
-  archived: "border-neutral-200 bg-neutral-100 text-neutral-700",
-  sub_admin: "border-cyan-200 bg-cyan-50 text-cyan-800",
+  active: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  completed: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  verified: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  approved: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  published: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  healthy: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  pending: "border-amber-500/20 bg-amber-500/10 text-amber-300",
+  processing: "border-blue-500/20 bg-blue-500/10 text-blue-300",
+  under_review: "border-blue-500/20 bg-blue-500/10 text-blue-300",
+  warning: "border-amber-500/20 bg-amber-500/10 text-amber-300",
+  suspended: "border-rose-500/20 bg-rose-500/10 text-rose-400",
+  failed: "border-rose-500/20 bg-rose-500/10 text-rose-400",
+  rejected: "border-rose-500/20 bg-rose-500/10 text-rose-400",
+  critical: "border-rose-500/20 bg-rose-500/10 text-rose-400",
+  error: "border-rose-500/20 bg-rose-500/10 text-rose-400",
+  hidden: "border-white/10 bg-white/5 text-white/55",
+  inactive: "border-white/10 bg-white/5 text-white/55",
+  archived: "border-white/10 bg-white/5 text-white/55",
+  sub_admin: "border-cyan-500/20 bg-cyan-500/10 text-cyan-300",
 };
 
 const statusDotStyles: Record<string, string> = {
@@ -178,7 +178,7 @@ export function AdminStatusBadge({ status }: { status: string }) {
     <span
       className={cn(
         "inline-flex min-h-6 items-center gap-1.5 rounded-full border px-2 text-[11px] font-black whitespace-nowrap capitalize",
-        statusStyles[status] || "border-black/10 bg-black/5 text-black/60",
+        statusStyles[status] || "border-white/10 bg-white/5 text-white/60",
       )}
     >
       <span
@@ -205,11 +205,11 @@ export function AdminEmptyState({
   return (
     <div className="admin-empty-state grid min-h-56 place-items-center px-5 py-10 text-center">
       <div>
-        <span className="mx-auto grid size-11 place-items-center rounded-md bg-black/5 text-black/35">
+        <span className="mx-auto grid size-11 place-items-center rounded-md border border-white/8 bg-white/[0.035] text-white/35">
           <Icon className="size-5" aria-hidden="true" />
         </span>
-        <h3 className="mt-4 text-sm font-black text-ink">{title}</h3>
-        <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-black/45">
+        <h3 className="mt-4 text-sm font-black text-white">{title}</h3>
+        <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-[#64748B]">
           {description}
         </p>
       </div>
@@ -240,7 +240,7 @@ export function AdminPagination({
     return `${pathname}?${params.toString()}`;
   };
   return (
-    <div className="flex flex-col gap-3 border-t border-black/10 px-4 py-3 text-xs text-black/50 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border-t border-white/8 px-4 py-3 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
       <p aria-live="polite">
         {total === 0
           ? "No records"
@@ -252,14 +252,14 @@ export function AdminPagination({
           tabIndex={page <= 1 ? -1 : undefined}
           href={page <= 1 ? hrefFor(1) : hrefFor(page - 1)}
           className={cn(
-            "admin-interactive inline-flex min-h-9 items-center gap-2 rounded-full border border-black/10 bg-white px-3 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
-            page <= 1 ? "pointer-events-none opacity-40" : "hover:bg-black/5",
+            "admin-interactive inline-flex min-h-9 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.025] px-3 font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal",
+            page <= 1 ? "pointer-events-none opacity-40" : "hover:bg-white/6",
           )}
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
           Previous
         </Link>
-        <span className="font-bold text-black">
+        <span className="font-bold text-white">
           {page} / {pages}
         </span>
         <Link
@@ -267,10 +267,10 @@ export function AdminPagination({
           tabIndex={page >= pages ? -1 : undefined}
           href={page >= pages ? hrefFor(pages) : hrefFor(page + 1)}
           className={cn(
-            "admin-interactive inline-flex min-h-9 items-center gap-2 rounded-full border border-black/10 bg-white px-3 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+            "admin-interactive inline-flex min-h-9 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.025] px-3 font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal",
             page >= pages
               ? "pointer-events-none opacity-40"
-              : "hover:bg-black/5",
+              : "hover:bg-white/6",
           )}
         >
           Next
@@ -302,7 +302,7 @@ export function AdminTable({
 
 export function AdminTableHead({ children }: { children: ReactNode }) {
   return (
-    <thead className="border-b border-black/10 bg-[#f7f7f4] text-[10px] text-black/48 uppercase">
+    <thead className="border-b border-white/8 bg-[#0B0D10] text-[10px] text-[#64748B] uppercase">
       <tr>{children}</tr>
     </thead>
   );
@@ -324,7 +324,7 @@ export function AdminTd({
   return (
     <td
       className={cn(
-        "border-b border-black/7 px-4 py-3.5 align-middle",
+        "border-b border-white/7 px-4 py-3.5 align-middle text-white/78",
         className,
       )}
     >
