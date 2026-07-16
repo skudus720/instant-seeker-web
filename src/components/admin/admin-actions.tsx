@@ -390,24 +390,27 @@ export function CreateSubAdminDialog() {
             </button>
           </div>
           <div className="grid gap-4 p-5">
+            <p className="rounded-md bg-black/[0.04] px-3 py-2 text-[11px] leading-5 text-black/55">
+              Super-admin creation is permissive: name, MoMo, reason, and
+              confirmations are optional. Email and a temporary password are
+              enough.
+            </p>
             <label className="block">
               <span className="text-xs font-black">Display name</span>
               <input
                 name="displayName"
-                required
-                minLength={2}
                 maxLength={60}
                 autoComplete="name"
                 autoFocus
                 className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
-                placeholder="Partner name"
+                placeholder="Optional partner name"
               />
             </label>
             <label className="block">
               <span className="text-xs font-black">Email</span>
               <input
                 name="email"
-                type="email"
+                type="text"
                 required
                 autoComplete="email"
                 className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
@@ -418,11 +421,10 @@ export function CreateSubAdminDialog() {
               <span className="text-xs font-black">Ghana MoMo number</span>
               <input
                 name="momoNumber"
-                required
                 inputMode="tel"
                 autoComplete="tel"
                 className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
-                placeholder="024XXXXXXX or +23324XXXXXXX"
+                placeholder="Optional · 024XXXXXXX or +23324XXXXXXX"
               />
             </label>
             <label className="block">
@@ -436,43 +438,15 @@ export function CreateSubAdminDialog() {
                 placeholder="Any temporary password"
                 autoComplete="new-password"
               />
-              <span className="mt-2 block text-[11px] leading-5 text-black/45">
-                Strength is not enforced for super-admin creation. Share it
-                privately and ask the partner to change it after first sign-in.
-              </span>
             </label>
-            <fieldset className="grid gap-3 rounded-md border border-black/10 bg-black/[0.025] p-3">
-              <legend className="px-1 text-xs font-black">Confirmations</legend>
-              <label className="flex items-start gap-3 text-xs leading-5 text-black/62">
-                <input
-                  type="checkbox"
-                  name="ageConfirmed"
-                  required
-                  className="mt-0.5 size-4 shrink-0 accent-black"
-                />
-                I have confirmed that this partner is at least 18 years old.
-              </label>
-              <label className="flex items-start gap-3 text-xs leading-5 text-black/62">
-                <input
-                  type="checkbox"
-                  name="authorizationConfirmed"
-                  required
-                  className="mt-0.5 size-4 shrink-0 accent-black"
-                />
-                I am authorized to create this account and issue sub-admin
-                access.
-              </label>
-            </fieldset>
             <label className="block">
               <span className="text-xs font-black">Reason</span>
               <textarea
                 name="reason"
-                required
-                minLength={5}
                 maxLength={1000}
                 rows={3}
                 className="mt-2 w-full rounded-md border border-black/12 p-3 text-sm"
-                placeholder="Why this partner is being onboarded"
+                placeholder="Optional note for the audit log"
               />
             </label>
           </div>

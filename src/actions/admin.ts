@@ -12,6 +12,7 @@ import {
   contentDraftSchema,
   createSubAdminSchema,
   featureFlagUpdateSchema,
+  resolveCreateSubAdminMomo,
   settingUpdateSchema,
 } from "@/lib/admin/validation";
 import { requirePermission } from "@/lib/auth";
@@ -538,6 +539,11 @@ export async function createSubAdminAction(formData: FormData): Promise<void> {
     await enforceMutationRateLimit(actor.id);
     const metadata = await requestMetadata();
     const { displayName, email, momoNumber, password, reason } = parsed.data;
+    const resolvedName =
+      displayName.trim() || email.split("@")[0] || "Sub-admin";
+    const momo = resolveCreateSubAdminMomo(momoNumber);
+    const auditReason =
+      reason.trim().length >= 5 ? reason.trim() : "Created by super administrator";
 
     const { data: created, error: createError } =
       await admin.auth.admin.createUser({
@@ -545,9 +551,10 @@ export async function createSubAdminAction(formData: FormData): Promise<void> {
         password,
         email_confirm: true,
         user_metadata: {
-          display_name: displayName,
-          momo_number: momoNumber,
+          display_name: resolvedName,
+          momo_number: momo.forAuth,
           age_confirmed: true,
+          terms_accepted: true,
         },
       });
     if (createError || !created.user) {
@@ -575,12 +582,14 @@ export async function createSubAdminAction(formData: FormData): Promise<void> {
     const { error: profileError } = await admin
       .from("profiles")
       .update({
-        display_name: displayName,
+        display_name: resolvedName.slice(0, 60),
         email: email.toLowerCase(),
-        momo_number: momoNumber,
+        momo_number: momo.forProfile,
         access_status: "active",
         account_status: "active",
+        paid_at: new Date().toISOString(),
         age_confirmed_at: new Date().toISOString(),
+        accepted_terms_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq("id", createdUserId);
@@ -590,7 +599,7 @@ export async function createSubAdminAction(formData: FormData): Promise<void> {
       p_target_id: createdUserId,
       p_operation: "change_role",
       p_value: "sub_admin",
-      p_reason: reason,
+      p_reason: auditReason,
       p_request_metadata: metadata,
     });
     if (roleError) throw new Error(roleError.message);

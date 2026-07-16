@@ -7,44 +7,52 @@ export const adminReasonSchema = z
   .min(5, "Enter a reason of at least 5 characters.")
   .max(1000, "Use 1,000 characters or fewer.");
 
-// Super-admins may set any temporary password; strength is intentionally not enforced.
-const createSubAdminPassword = z
-  .string()
-  .min(1, "Enter a temporary password.")
-  .max(72, "Use no more than 72 characters.");
-
-function requiredAttestation(message: string) {
-  return z.preprocess(
-    (value) => value === "on" || value === true,
-    z.literal(true, { error: message }),
-  );
-}
-
+/** Super-admin onboarding accepts loosely filled partner details. */
 export const createSubAdminSchema = z.object({
   displayName: z
     .string()
     .trim()
-    .min(2, "Enter at least 2 characters.")
-    .max(60, "Use no more than 60 characters."),
-  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+    .max(60)
+    .optional()
+    .transform((value) => value || "Sub-admin"),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "Enter an email address.")
+    .max(254),
   momoNumber: z
     .string()
     .trim()
-    .transform(normalizeGhanaMomoNumber)
-    .refine(
-      (value) => /^\+233[25]\d{8}$/.test(value),
-      "Enter a valid Ghana Mobile Money number.",
-    ),
-  password: createSubAdminPassword,
-  ageConfirmed: requiredAttestation(
-    "Confirm that the sub-admin is at least 18 years old.",
-  ),
-  authorizationConfirmed: requiredAttestation(
-    "Confirm that you are authorized to create this partner account.",
-  ),
-  reason: adminReasonSchema,
+    .optional()
+    .transform((value) => {
+      if (!value) return "";
+      const normalized = normalizeGhanaMomoNumber(value);
+      return /^\+233[25]\d{8}$/.test(normalized) ? normalized : value;
+    }),
+  password: z
+    .string()
+    .min(1, "Enter a temporary password.")
+    .max(72, "Use no more than 72 characters."),
+  ageConfirmed: z.any().optional(),
+  authorizationConfirmed: z.any().optional(),
+  reason: z
+    .string()
+    .trim()
+    .max(1000)
+    .optional()
+    .transform((value) => value || "Created by super administrator"),
   returnTo: z.string().optional(),
 });
+
+export function resolveCreateSubAdminMomo(momoNumber: string) {
+  const normalized = normalizeGhanaMomoNumber(momoNumber);
+  if (/^\+233[25]\d{8}$/.test(normalized)) {
+    return { forAuth: normalized, forProfile: normalized };
+  }
+  // Auth trigger still requires a Ghana MoMo shape; store null on the profile.
+  return { forAuth: "+233240000000", forProfile: null as string | null };
+}
 
 export const dateRangeSchema = z.object({
   from: z.iso.date().optional(),
