@@ -1,10 +1,52 @@
 import { z } from "zod";
+import { normalizeGhanaMomoNumber } from "@/lib/validation/auth";
 
 export const adminReasonSchema = z
   .string()
   .trim()
   .min(5, "Enter a reason of at least 5 characters.")
   .max(1000, "Use 1,000 characters or fewer.");
+
+const createSubAdminPassword = z
+  .string()
+  .min(8, "Use at least 8 characters.")
+  .max(72, "Use no more than 72 characters.")
+  .regex(/[A-Z]/, "Add at least one uppercase letter.")
+  .regex(/[a-z]/, "Add at least one lowercase letter.")
+  .regex(/[0-9]/, "Add at least one number.");
+
+function requiredAttestation(message: string) {
+  return z.preprocess(
+    (value) => value === "on" || value === true,
+    z.literal(true, { error: message }),
+  );
+}
+
+export const createSubAdminSchema = z.object({
+  displayName: z
+    .string()
+    .trim()
+    .min(2, "Enter at least 2 characters.")
+    .max(60, "Use no more than 60 characters."),
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  momoNumber: z
+    .string()
+    .trim()
+    .transform(normalizeGhanaMomoNumber)
+    .refine(
+      (value) => /^\+233[25]\d{8}$/.test(value),
+      "Enter a valid Ghana Mobile Money number.",
+    ),
+  password: createSubAdminPassword,
+  ageConfirmed: requiredAttestation(
+    "Confirm that the sub-admin is at least 18 years old.",
+  ),
+  authorizationConfirmed: requiredAttestation(
+    "Confirm that you are authorized to create this partner account.",
+  ),
+  reason: adminReasonSchema,
+  returnTo: z.string().optional(),
+});
 
 export const dateRangeSchema = z.object({
   from: z.iso.date().optional(),

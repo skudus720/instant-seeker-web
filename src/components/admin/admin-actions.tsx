@@ -1,9 +1,16 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  LoaderCircle,
+  UserPlus,
+  X,
+} from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
-import { adminMutationAction } from "@/actions/admin";
+import { useFormStatus } from "react-dom";
+import { adminMutationAction, createSubAdminAction } from "@/actions/admin";
 import { cn } from "@/lib/utils";
 
 export type AdminActionKind =
@@ -314,6 +321,171 @@ export function AdminExportDialog({
             <button className="admin-interactive min-h-10 rounded-full bg-ink px-4 text-sm font-black text-white hover:bg-graphite">
               Generate export
             </button>
+          </div>
+        </form>
+      </dialog>
+    </>
+  );
+}
+
+function CreateSubAdminSubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="admin-interactive inline-flex min-h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-black text-white hover:bg-graphite disabled:cursor-wait disabled:opacity-65"
+    >
+      {pending ? (
+        <LoaderCircle
+          className="size-4 animate-spin motion-reduce:animate-none"
+          aria-hidden="true"
+        />
+      ) : (
+        <UserPlus className="size-4" aria-hidden="true" />
+      )}
+      {pending ? "Creating account..." : "Add sub-admin"}
+    </button>
+  );
+}
+
+export function CreateSubAdminDialog() {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const returnTo = `${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => dialogRef.current?.showModal()}
+        className="admin-interactive inline-flex min-h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-black text-white hover:bg-graphite focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+      >
+        <UserPlus className="size-4" aria-hidden="true" />
+        Add sub-admin
+      </button>
+      <dialog
+        ref={dialogRef}
+        className="admin-dialog m-auto w-[min(32rem,calc(100%-2rem))] rounded-lg border border-black/12 bg-white p-0 text-ink shadow-2xl backdrop:bg-black/65"
+      >
+        <form action={createSubAdminAction}>
+          <input type="hidden" name="returnTo" value={returnTo} />
+          <div className="flex items-start justify-between gap-4 border-b border-black/10 p-5">
+            <div>
+              <h2 className="text-lg font-black">Add sub-admin</h2>
+              <p className="mt-2 text-sm leading-6 text-black/52">
+                Creates a confirmed account, grants the sub-admin role, and
+                provisions a referral code. The partner can sign in normally
+                using the email and temporary password.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => dialogRef.current?.close()}
+              className="admin-interactive grid size-9 shrink-0 place-items-center rounded-full hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              aria-label="Close create sub-admin dialog"
+            >
+              <X className="size-4" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="grid gap-4 p-5">
+            <label className="block">
+              <span className="text-xs font-black">Display name</span>
+              <input
+                name="displayName"
+                required
+                minLength={2}
+                maxLength={60}
+                autoComplete="name"
+                autoFocus
+                className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
+                placeholder="Partner name"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-black">Email</span>
+              <input
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
+                placeholder="partner@example.com"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-black">Ghana MoMo number</span>
+              <input
+                name="momoNumber"
+                required
+                inputMode="tel"
+                autoComplete="tel"
+                className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
+                placeholder="024XXXXXXX or +23324XXXXXXX"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-black">Temporary password</span>
+              <input
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                maxLength={72}
+                className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
+                placeholder="At least 8 chars, upper, lower, number"
+                autoComplete="new-password"
+              />
+              <span className="mt-2 block text-[11px] leading-5 text-black/45">
+                Share it privately and ask the partner to reset it after their
+                first sign-in.
+              </span>
+            </label>
+            <fieldset className="grid gap-3 rounded-md border border-black/10 bg-black/[0.025] p-3">
+              <legend className="px-1 text-xs font-black">Confirmations</legend>
+              <label className="flex items-start gap-3 text-xs leading-5 text-black/62">
+                <input
+                  type="checkbox"
+                  name="ageConfirmed"
+                  required
+                  className="mt-0.5 size-4 shrink-0 accent-black"
+                />
+                I have confirmed that this partner is at least 18 years old.
+              </label>
+              <label className="flex items-start gap-3 text-xs leading-5 text-black/62">
+                <input
+                  type="checkbox"
+                  name="authorizationConfirmed"
+                  required
+                  className="mt-0.5 size-4 shrink-0 accent-black"
+                />
+                I am authorized to create this account and issue sub-admin
+                access.
+              </label>
+            </fieldset>
+            <label className="block">
+              <span className="text-xs font-black">Reason</span>
+              <textarea
+                name="reason"
+                required
+                minLength={5}
+                maxLength={1000}
+                rows={3}
+                className="mt-2 w-full rounded-md border border-black/12 p-3 text-sm"
+                placeholder="Why this partner is being onboarded"
+              />
+            </label>
+          </div>
+          <div className="flex justify-end gap-2 border-t border-black/10 p-4">
+            <button
+              type="button"
+              onClick={() => dialogRef.current?.close()}
+              className="admin-interactive min-h-10 rounded-full border border-black/10 bg-white px-4 text-sm font-bold hover:bg-black/5"
+            >
+              Cancel
+            </button>
+            <CreateSubAdminSubmitButton />
           </div>
         </form>
       </dialog>

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Search, Users } from "lucide-react";
 import Link from "next/link";
-import { AdminNotice } from "@/components/admin/admin-actions";
+import {
+  AdminNotice,
+  CreateSubAdminDialog,
+} from "@/components/admin/admin-actions";
 import { AdminColumnVisibility } from "@/components/admin/column-visibility";
 import {
   AdminEmptyState,
@@ -15,6 +18,7 @@ import {
   AdminTh,
 } from "@/components/admin/admin-ui";
 import { getUsersData } from "@/lib/admin/data";
+import { requirePermission } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Users" };
 
@@ -50,20 +54,23 @@ export default async function AdminUsersPage({
   searchParams: Promise<UsersSearchParams>;
 }) {
   const params = await searchParams;
-  const result = await getUsersData({
-    page: Number(params.page || 1),
-    query: params.q,
-    role: params.role,
-    status: params.status,
-    from: params.from,
-    to: params.to,
-    sort: params.sort,
-    direction: params.direction,
-    activityFrom: params.activityFrom,
-    activityTo: params.activityTo,
-    flagged: params.flagged === "true",
-    rateLimited: params.rateLimited === "true",
-  });
+  const [actor, result] = await Promise.all([
+    requirePermission("users:view"),
+    getUsersData({
+      page: Number(params.page || 1),
+      query: params.q,
+      role: params.role,
+      status: params.status,
+      from: params.from,
+      to: params.to,
+      sort: params.sort,
+      direction: params.direction,
+      activityFrom: params.activityFrom,
+      activityTo: params.activityTo,
+      flagged: params.flagged === "true",
+      rateLimited: params.rateLimited === "true",
+    }),
+  ]);
   const preserved = {
     q: params.q,
     role: params.role,
@@ -83,6 +90,9 @@ export default async function AdminUsersPage({
         eyebrow="Accounts"
         title="Users"
         description="Search account activity, review safety history, and perform reasoned account actions. Passwords, tokens, and provider secrets are never available here."
+        actions={
+          actor.role === "super_admin" ? <CreateSubAdminDialog /> : undefined
+        }
       />
       <AdminNotice
         result={params.admin_result}

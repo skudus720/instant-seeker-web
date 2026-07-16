@@ -10,6 +10,7 @@ import {
   adminNoteSchema,
   aiConfigDraftSchema,
   contentDraftSchema,
+  createSubAdminSchema,
   featureFlagUpdateSchema,
   settingUpdateSchema,
 } from "@/lib/admin/validation";
@@ -114,6 +115,11 @@ function publicErrorMessage(message: string) {
     "not found",
     "future",
     "invalid",
+    "already been registered",
+    "already registered",
+    "mobile money",
+    "password",
+    "email",
   ];
   return allowed.some((phrase) => normalized.includes(phrase))
     ? message.slice(0, 180)
@@ -495,4 +501,122 @@ export async function updateFeatureFlagAction(
     redirect(resultUrl(returnTo, "error", publicErrorMessage(error.message)));
   revalidatePath("/admin", "layout");
   redirect(resultUrl(returnTo, "success", "Feature flag updated and audited."));
+}
+
+export async function createSubAdminAction(formData: FormData): Promise<void> {
+  const returnTo = safeReturnTo(formData.get("returnTo"), "/admin/users");
+  const parsed = createSubAdminSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    redirect(
+      resultUrl(
+        returnTo,
+        "error",
+        parsed.error.issues[0]?.message || "Invalid sub-admin details.",
+      ),
+    );
+  }
+
+  const actor = await requirePermission("users:roles");
+  if (actor.demo) {
+    redirect(
+      resultUrl(
+        returnTo,
+        "error",
+        "Sub-admin creation is disabled in demo admin preview.",
+      ),
+    );
+  }
+
+  const admin = createAdminSupabaseClient();
+  const supabase = await createServerSupabaseClient();
+  if (!admin || !supabase) {
+    redirect(resultUrl(returnTo, "error", "Supabase is not configured."));
+  }
+
+  let createdUserId: string | null = null;
+  try {
+    await enforceMutationRateLimit(actor.id);
+    const metadata = await requestMetadata();
+    const { displayName, email, momoNumber, password, reason } = parsed.data;
+
+    const { data: created, error: createError } =
+      await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: {
+          display_name: displayName,
+          momo_number: momoNumber,
+          age_confirmed: true,
+        },
+      });
+    if (createError || !created.user) {
+      throw new Error(createError?.message || "Unable to create the account.");
+    }
+    createdUserId = created.user.id;
+
+    let profileReady = false;
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const { data: profile } = await admin
+        .from("profiles")
+        .select("id")
+        .eq("id", createdUserId)
+        .maybeSingle();
+      if (profile?.id) {
+        profileReady = true;
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+    if (!profileReady) {
+      throw new Error("The account profile was not created in time.");
+    }
+
+    const { error: profileError } = await admin
+      .from("profiles")
+      .update({
+        display_name: displayName,
+        email: email.toLowerCase(),
+        momo_number: momoNumber,
+        access_status: "active",
+        account_status: "active",
+        age_confirmed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", createdUserId);
+    if (profileError) throw new Error(profileError.message);
+
+    const { error: roleError } = await supabase.rpc("admin_manage_user", {
+      p_target_id: createdUserId,
+      p_operation: "change_role",
+      p_value: "sub_admin",
+      p_reason: reason,
+      p_request_metadata: metadata,
+    });
+    if (roleError) throw new Error(roleError.message);
+  } catch (error) {
+    if (createdUserId) {
+      await admin.auth.admin.deleteUser(createdUserId).catch(() => undefined);
+    }
+    redirect(
+      resultUrl(
+        returnTo,
+        "error",
+        publicErrorMessage(
+          error instanceof Error ? error.message : "Unknown failure",
+        ),
+      ),
+    );
+  }
+
+  revalidatePath("/admin", "layout");
+  revalidatePath("/admin/users");
+  revalidatePath("/admin/referrals");
+  redirect(
+    resultUrl(
+      returnTo,
+      "success",
+      `Sub-admin created for ${parsed.data.email}. Share the temporary password securely.`,
+    ),
+  );
 }
