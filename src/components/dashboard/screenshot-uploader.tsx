@@ -111,20 +111,35 @@ export function ScreenshotUploader({
       () => setProgress((value) => Math.min(value + 4, 68)),
       250,
     );
+    const abortController = new AbortController();
+    const abortTimer = window.setTimeout(
+      () => abortController.abort(),
+      45_000,
+    );
     try {
       const uploadFile = await normalizeForTransientAnalysis(file).catch(
         () => file,
       );
+      const { extractVisibleTextFromScreenshot } = await import(
+        "@/lib/analysis/client-ocr"
+      );
+      const extractedVisibleText = await extractVisibleTextFromScreenshot(
+        uploadFile,
+      ).catch(() => "");
       const formData = new FormData();
       formData.append("screenshot", uploadFile);
       formData.append("riskPreference", riskPreference);
       if (visibleFixtureNotes.trim()) {
         formData.append("visibleFixtureNotes", visibleFixtureNotes);
       }
+      if (extractedVisibleText) {
+        formData.append("extractedVisibleText", extractedVisibleText);
+      }
       setStage("analyzing");
       const response = await fetch("/api/analyze", {
         method: "POST",
         body: formData,
+        signal: abortController.signal,
       });
       const payload = (await response.json()) as {
         result?: AnalysisResult;
@@ -142,12 +157,15 @@ export function ScreenshotUploader({
       window.setTimeout(() => resultRef.current?.focus(), 50);
     } catch (reason) {
       setError(
-        reason instanceof Error
-          ? reason.message
-          : "Analysis failed safely. Try again.",
+        reason instanceof Error && reason.name === "AbortError"
+          ? "Analysis timed out. Try a clearer crop of the match list."
+          : reason instanceof Error
+            ? reason.message
+            : "Analysis failed safely. Try again.",
       );
       setStage("error");
     } finally {
+      window.clearTimeout(abortTimer);
       window.clearInterval(timer);
     }
   };
@@ -284,7 +302,7 @@ export function ScreenshotUploader({
                   <div className="flex items-center justify-between text-xs font-bold text-black/55">
                     <span>
                       {stage === "preparing"
-                        ? "Preparing screenshot"
+                        ? "Reading screenshot fixtures"
                         : "Generating analysis"}
                     </span>
                     <span>{progress}%</span>

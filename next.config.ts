@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   experimental: { authInterrupts: true },
+  serverExternalPackages: ["sharp", "tesseract.js"],
   turbopack: {
     root: __dirname,
   },

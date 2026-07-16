@@ -70,4 +70,16 @@ describe("screenshot upload validation", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("accepts browser-extracted Instant Virtuals OCR text", () => {
+    const result = validateAnalysisSettings({
+      riskPreference: "balanced",
+      responseMode: "team-selections",
+      extractedVisibleText: "MCI vs WHU\n1.74 3.38 5.58\nESP vs ALA\n2.70 2.92 2.97",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.extractedVisibleText).toContain("MCI vs WHU");
+    }
+  });
 });

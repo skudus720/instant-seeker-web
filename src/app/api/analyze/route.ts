@@ -69,6 +69,7 @@ export async function POST(request: Request) {
   const rawRiskPreference = formData.get("riskPreference");
   const rawResponseMode = formData.get("responseMode");
   const rawVisibleFixtureNotes = formData.get("visibleFixtureNotes");
+  const rawExtractedVisibleText = formData.get("extractedVisibleText");
   const settings = validateAnalysisSettings({
     riskPreference:
       typeof rawRiskPreference === "string" ? rawRiskPreference : undefined,
@@ -77,6 +78,10 @@ export async function POST(request: Request) {
     visibleFixtureNotes:
       typeof rawVisibleFixtureNotes === "string"
         ? rawVisibleFixtureNotes
+        : undefined,
+    extractedVisibleText:
+      typeof rawExtractedVisibleText === "string"
+        ? rawExtractedVisibleText
         : undefined,
   });
   if (!settings.success) {

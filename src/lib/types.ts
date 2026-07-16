@@ -9,6 +9,8 @@ export type AccountStatus =
 export interface AnalysisSettings {
   riskPreference?: RiskPreference;
   visibleFixtureNotes?: string;
+  /** OCR text extracted in the browser before upload. */
+  extractedVisibleText?: string;
   responseMode?: "full" | "team-selections";
   configuration?: {
     id: string;

@@ -3,10 +3,13 @@ import "server-only";
 import { createHash } from "node:crypto";
 import type { AnalysisProvider } from "@/lib/analysis/provider";
 import { DemoAnalysisProvider } from "@/lib/analysis/demo-provider";
+import { withTimeout } from "@/lib/analysis/ocr-timeout";
 import { analysisResultSchema } from "@/lib/analysis/schema";
 import { extractVisibleTextFromImage } from "@/lib/analysis/screenshot-ocr";
 import { parseSportyBetVirtualsText } from "@/lib/analysis/sportybet-virtuals-parser";
 import type { AnalysisRequest, AnalysisResult } from "@/lib/types";
+
+const SERVER_OCR_TIMEOUT_MS = 12_000;
 
 export class ScreenshotAnalysisProvider implements AnalysisProvider {
   readonly name = "screenshot-ocr";
@@ -16,17 +19,27 @@ export class ScreenshotAnalysisProvider implements AnalysisProvider {
     const teamSelections =
       request.settings?.responseMode === "team-selections";
     const notes = request.settings?.visibleFixtureNotes?.trim() || "";
+    const clientText = request.settings?.extractedVisibleText?.trim() || "";
 
-    let ocrText = "";
+    let ocrText = clientText;
     let ocrError: string | null = null;
-    try {
-      ocrText = await extractVisibleTextFromImage(
-        request.image.bytes,
-        request.image.mimeType,
-      );
-    } catch (error) {
-      ocrError =
-        error instanceof Error ? error.message : "OCR failed unexpectedly.";
+
+    // Prefer browser OCR. Only attempt serverless OCR when the client
+    // could not extract text, and never let it hang the request.
+    if (!ocrText) {
+      try {
+        ocrText = await withTimeout(
+          extractVisibleTextFromImage(
+            request.image.bytes,
+            request.image.mimeType,
+          ),
+          SERVER_OCR_TIMEOUT_MS,
+          "Screenshot OCR timed out on the server.",
+        );
+      } catch (error) {
+        ocrError =
+          error instanceof Error ? error.message : "OCR failed unexpectedly.";
+      }
     }
 
     const combinedText = [ocrText, notes].filter(Boolean).join("\n");
@@ -86,6 +99,9 @@ export class ScreenshotAnalysisProvider implements AnalysisProvider {
         .filter(Boolean)
         .slice(0, 40),
       parsingWarnings: [
+        ...(clientText
+          ? []
+          : ["Browser OCR text was empty; used a timed server OCR pass."]),
         ...(ocrError ? [`OCR warning: ${ocrError}`] : []),
         "Selections use visible 1/2 favorites only; draw markets are not chosen as win picks.",
       ],

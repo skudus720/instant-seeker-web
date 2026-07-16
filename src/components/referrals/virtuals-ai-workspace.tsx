@@ -32,6 +32,8 @@ const processingSteps = [
   "Selecting supported teams",
 ] as const;
 
+const ANALYZE_TIMEOUT_MS = 45_000;
+
 function delay(milliseconds: number) {
   return new Promise<void>((resolve) =>
     window.setTimeout(resolve, milliseconds),
@@ -122,20 +124,39 @@ export function VirtualsAiWorkspace({ demoMode }: { demoMode: boolean }) {
       820,
     );
 
+    const abortController = new AbortController();
+    const abortTimer = window.setTimeout(
+      () => abortController.abort(),
+      ANALYZE_TIMEOUT_MS,
+    );
+
     try {
       const uploadFile = await normalizeForTransientAnalysis(file).catch(
         () => file,
       );
+      setProcessingStep(1);
+      const { extractVisibleTextFromScreenshot } = await import(
+        "@/lib/analysis/client-ocr"
+      );
+      const extractedVisibleText = await extractVisibleTextFromScreenshot(
+        uploadFile,
+      ).catch(() => "");
+
       const formData = new FormData();
       formData.append("screenshot", uploadFile);
       formData.append("riskPreference", "balanced");
       formData.append("responseMode", "team-selections");
       if (notes.trim()) formData.append("visibleFixtureNotes", notes.trim());
+      if (extractedVisibleText) {
+        formData.append("extractedVisibleText", extractedVisibleText);
+      }
 
       setStage("analyzing");
+      setProcessingStep(2);
       const response = await fetch("/api/analyze", {
         method: "POST",
         body: formData,
+        signal: abortController.signal,
       });
       const payload = (await response.json()) as {
         result?: AnalysisResult;
@@ -162,13 +183,16 @@ export function VirtualsAiWorkspace({ demoMode }: { demoMode: boolean }) {
       setStage("done");
       window.setTimeout(() => resultRef.current?.focus(), 80);
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "Analysis failed safely. Try another screenshot.",
-      );
+      const message =
+        reason instanceof Error && reason.name === "AbortError"
+          ? "Analysis timed out. Try a clearer crop of the match list."
+          : reason instanceof Error
+            ? reason.message
+            : "Analysis failed safely. Try another screenshot.";
+      setError(message);
       setStage("ready");
     } finally {
+      window.clearTimeout(abortTimer);
       window.clearInterval(progressTimer);
       window.clearInterval(stepTimer);
     }

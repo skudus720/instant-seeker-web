@@ -53,6 +53,14 @@ export const analysisSettingsSchema = z.object({
     .max(1_200, "Visible fixture notes must be 1,200 characters or fewer.")
     .optional()
     .transform(normalizeVisibleFixtureNotes),
+  extractedVisibleText: z
+    .string()
+    .max(
+      20_000,
+      "Extracted screenshot text must be 20,000 characters or fewer.",
+    )
+    .optional()
+    .transform(normalizeVisibleFixtureNotes),
 });
 
 export type ValidatedAnalysisSettings = z.infer<typeof analysisSettingsSchema>;
@@ -61,6 +69,7 @@ export function validateAnalysisSettings(settings: {
   riskPreference?: string;
   responseMode?: string;
   visibleFixtureNotes?: string;
+  extractedVisibleText?: string;
 }) {
   return analysisSettingsSchema.safeParse(settings);
 }
