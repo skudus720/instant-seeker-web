@@ -58,6 +58,19 @@ describe("admin mutation validation", () => {
     ).toBe(false);
   });
 
+  it("allows short or low-strength temporary passwords for sub-admin creation", () => {
+    const result = createSubAdminSchema.safeParse({
+      displayName: "Ama Partner",
+      email: "partner@example.com",
+      momoNumber: "0241234567",
+      password: "a",
+      ageConfirmed: "on",
+      authorizationConfirmed: "on",
+      reason: "Onboard referral partner for Accra",
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects invalid CMS JSON on the server schema", () => {
     expect(
       contentDraftSchema.safeParse({

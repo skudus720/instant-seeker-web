@@ -431,15 +431,14 @@ export function CreateSubAdminDialog() {
                 name="password"
                 type="password"
                 required
-                minLength={8}
                 maxLength={72}
                 className="mt-2 min-h-11 w-full rounded-md border border-black/12 px-3 text-sm"
-                placeholder="At least 8 chars, upper, lower, number"
+                placeholder="Any temporary password"
                 autoComplete="new-password"
               />
               <span className="mt-2 block text-[11px] leading-5 text-black/45">
-                Share it privately and ask the partner to reset it after their
-                first sign-in.
+                Strength is not enforced for super-admin creation. Share it
+                privately and ask the partner to change it after first sign-in.
               </span>
             </label>
             <fieldset className="grid gap-3 rounded-md border border-black/10 bg-black/[0.025] p-3">

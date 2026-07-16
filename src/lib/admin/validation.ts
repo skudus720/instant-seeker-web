@@ -7,13 +7,11 @@ export const adminReasonSchema = z
   .min(5, "Enter a reason of at least 5 characters.")
   .max(1000, "Use 1,000 characters or fewer.");
 
+// Super-admins may set any temporary password; strength is intentionally not enforced.
 const createSubAdminPassword = z
   .string()
-  .min(8, "Use at least 8 characters.")
-  .max(72, "Use no more than 72 characters.")
-  .regex(/[A-Z]/, "Add at least one uppercase letter.")
-  .regex(/[a-z]/, "Add at least one lowercase letter.")
-  .regex(/[0-9]/, "Add at least one number.");
+  .min(1, "Enter a temporary password.")
+  .max(72, "Use no more than 72 characters.");
 
 function requiredAttestation(message: string) {
   return z.preprocess(
