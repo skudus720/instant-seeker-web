@@ -37,7 +37,7 @@ import {
 } from "@/lib/validation/auth";
 
 const inputClass =
-  "min-h-14 w-full rounded-md border border-white/12 bg-white/[0.045] px-11 text-white outline-none transition-colors placeholder:text-white/25 hover:border-white/22 focus:border-signal focus:ring-2 focus:ring-signal/20";
+  "min-h-14 w-full rounded-2xl border border-white/12 bg-white/[0.045] px-11 text-white outline-none transition-colors placeholder:text-white/25 hover:border-white/22 focus:border-signal focus:ring-2 focus:ring-signal/20";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -201,7 +201,7 @@ function SubmitButton({
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-md bg-signal px-5 py-3 font-black text-ink shadow-[0_16px_34px_rgba(255,202,39,0.14)] transition-transform hover:-translate-y-0.5 hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-signal active:translate-y-0 disabled:cursor-wait disabled:opacity-65"
+      className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-signal px-5 py-3 font-black text-ink shadow-[0_16px_34px_rgba(255,202,39,0.18)] transition-transform hover:-translate-y-0.5 hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-signal active:translate-y-0 disabled:cursor-wait disabled:opacity-65"
     >
       {pending ? (
         <LoaderCircle
@@ -314,23 +314,25 @@ function SignupForm({
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormStatus result={result} />
 
-      <div className="flex items-center justify-between gap-4 border-y border-white/10 py-4">
-        <span className="flex min-w-0 items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-signal text-ink">
-            <ReceiptText className="size-4" aria-hidden="true" />
-          </span>
-          <span className="min-w-0">
-            <span className="block text-sm font-black text-white">
-              One-time account access
+      <div className="rounded-2xl border border-signal/30 bg-signal/10 p-4">
+        <div className="flex items-center justify-between gap-4">
+          <span className="flex min-w-0 items-center gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-signal text-ink">
+              <ReceiptText className="size-4" aria-hidden="true" />
             </span>
-            <span className="block text-xs text-white/40">
-              No subscription · No betting deposit
+            <span className="min-w-0">
+              <span className="block text-sm font-black text-white">
+                One-time Mobile Money access
+              </span>
+              <span className="block text-xs text-white/45">
+                No subscription · No betting deposit · Paystack secure checkout
+              </span>
             </span>
           </span>
-        </span>
-        <strong className="shrink-0 text-lg font-black text-signal">
-          {signupFeeLabel}
-        </strong>
+          <strong className="shrink-0 text-xl font-black text-signal">
+            {signupFeeLabel}
+          </strong>
+        </div>
       </div>
 
       <TextField
@@ -425,7 +427,7 @@ function SignupForm({
         label={
           demoMode
             ? "Preview signup · no charge"
-            : `Continue to secure payment · ${signupFeeLabel}`
+            : `Pay with Mobile Money · ${signupFeeLabel}`
         }
       />
 

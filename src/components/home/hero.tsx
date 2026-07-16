@@ -1,6 +1,5 @@
-import { ArrowRight, ChartNoAxesCombined } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { HeroLiveStats } from "@/components/home/hero-live-stats";
 import { TicketShowcase } from "@/components/home/ticket-showcase";
 import { Reveal } from "@/components/ui/reveal";
 import type { PublicStats } from "@/lib/types";
@@ -17,109 +16,83 @@ function contentString(
 }
 
 export function Hero({
-  stats,
   content,
-  tickerContent,
 }: {
-  stats: PublicStats;
+  stats?: PublicStats;
   content?: Record<string, unknown>;
   tickerContent?: Record<string, unknown>;
 }) {
-  const defaultTickerItems = [
-    "Approved records only",
-    "Screenshots discarded after analysis",
-    "18+ responsible analysis",
-    "Independent service",
-    "Guaranteed match picks",
-  ];
-  const tickerItems = Array.isArray(tickerContent?.items)
-    ? tickerContent.items
-        .filter((item): item is string => typeof item === "string")
-        .slice(0, 8)
-    : defaultTickerItems;
   const eyebrow = contentString(
     content,
     "eyebrow",
-    "Live AI guaranteed match picks",
+    "AI-Powered Analysis · 18+",
   );
-  const title = contentString(content, "title", "Instant Seeker");
-  const subtitle = contentString(
+  const title = contentString(
     content,
-    "subtitle",
-    "SportyBet · Instant Football screenshot analysis",
+    "title",
+    "Turn match screenshots into clearer probability insights.",
   );
   const description = contentString(
     content,
     "description",
-    "The AI analyzes the visible match screenshot and returns guaranteed matches to win in seconds.",
+    "Upload your virtual-match screenshots and receive AI-assisted probability estimates. No guarantees — just smarter analysis to inform your decisions.",
   );
 
   return (
-    <section className="data-grid relative overflow-hidden bg-ink text-white">
+    <section className="canva-hero relative overflow-hidden bg-ink text-white">
       <div
-        className="absolute inset-x-0 top-0 h-px bg-signal/50"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-signal/50"
         aria-hidden="true"
       />
-      <div className="border-b border-signal/25 bg-signal text-ink">
-        <div className="mx-auto flex max-w-[1200px] overflow-hidden px-5 py-2.5 text-xs font-black tracking-[0] uppercase sm:px-8">
-          <div className="flex min-w-max animate-[ticker_24s_linear_infinite] items-center gap-4 motion-reduce:animate-none">
-            {[...tickerItems, ...tickerItems].map((item, itemIndex) => (
-              <span
-                key={`${item}-${itemIndex}`}
-                className="flex items-center gap-4"
-              >
-                {item}
-                <span aria-hidden="true">•</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="mx-auto grid min-h-[calc(100svh-7.25rem)] max-w-[1200px] items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1.02fr_0.98fr] lg:py-16">
+      <div
+        className="pointer-events-none absolute -top-32 right-[-10%] h-[34rem] w-[34rem] rounded-full bg-signal/10 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute bottom-[-20%] left-[-12%] h-[28rem] w-[28rem] rounded-full bg-signal/[0.06] blur-3xl"
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto grid min-h-[calc(100svh-4.5rem)] max-w-[1200px] items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:py-16">
         <Reveal>
-          <div className="max-w-3xl">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-signal/35 bg-signal/10 px-3 py-1.5 text-xs font-black text-signal uppercase">
-              <ChartNoAxesCombined className="size-4" aria-hidden="true" />
+          <div className="max-w-2xl">
+            <p className="inline-flex items-center rounded-full border border-signal/55 px-3.5 py-1.5 text-[11px] font-black tracking-[0.02em] text-signal uppercase">
               {eyebrow}
             </p>
-            <h1 className="max-w-3xl text-6xl leading-[0.9] font-black tracking-[0] text-balance uppercase italic sm:text-7xl lg:text-8xl xl:text-9xl">
+            <h1 className="mt-6 max-w-[15ch] text-4xl leading-[1.02] font-black text-balance sm:text-5xl lg:text-6xl xl:text-[3.75rem]">
               {title}
             </h1>
-            <p className="mt-7 max-w-2xl text-xl leading-8 font-black text-signal sm:text-2xl">
-              {subtitle}
-            </p>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+            <p className="mt-6 max-w-xl text-base leading-7 text-white/58 sm:text-lg sm:leading-8">
               {description}
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/signup"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-signal px-7 py-3.5 font-black text-ink shadow-[0_0_34px_rgba(255,202,39,0.22)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-signal px-7 py-3.5 font-black text-ink shadow-[0_0_40px_rgba(255,202,39,0.28)] transition-transform hover:-translate-y-0.5 hover:bg-[#ffd64f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
               >
-                {contentString(content, "primaryCtaLabel", "Get Started")}
+                {contentString(content, "primaryCtaLabel", "Start Analysing")}
                 <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
               <Link
-                href="#reviews"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3.5 font-bold text-white backdrop-blur transition-colors hover:border-signal/55 hover:bg-signal/8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+                href="#how-it-works"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-transparent px-7 py-3.5 font-black text-white transition-colors hover:border-white/45 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
               >
-                {contentString(content, "secondaryCtaLabel", "See Reviews")}
+                {contentString(
+                  content,
+                  "secondaryCtaLabel",
+                  "See How It Works",
+                )}
               </Link>
             </div>
-            <HeroLiveStats initialStats={stats} />
             <div className="sr-only">
-              Instant Seeker provides guaranteed match picks and does not accept
-              bets or handle gambling funds.
+              Instant Seeker provides AI-assisted probability estimates and does
+              not accept bets or handle gambling funds. 18+ only.
             </div>
           </div>
         </Reveal>
-        <Reveal delay={0.12} className="pb-5 lg:pb-0">
+        <Reveal delay={0.12} className="pb-6 lg:pb-0">
           <TicketShowcase />
         </Reveal>
-      </div>
-      <div className="mx-auto flex max-w-[1200px] items-center gap-4 border-t border-white/10 px-5 py-5 text-xs text-white/42 sm:px-8">
-        <span className="h-px flex-1 bg-white/10" aria-hidden="true" />
-        <span>Independent analysis · No betting funds handled · 18+ only</span>
       </div>
     </section>
   );

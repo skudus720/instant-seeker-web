@@ -18,7 +18,7 @@ export default async function LoginPage({
     <AuthShell
       mode="login"
       title="Welcome back"
-      description="Log in to access your private reports and continue your screenshot analysis workflow."
+      description="Log in to access private reports and continue AI-assisted screenshot analysis."
       notice={
         params.payment === "success"
           ? "Payment confirmed. Confirm your email if requested, then log in to continue."

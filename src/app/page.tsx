@@ -7,14 +7,12 @@ import { Header } from "@/components/layout/header";
 import {
   getDailyPublicReviews,
   getPublishedContent,
-  getPublicStats,
 } from "@/lib/public-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [stats, reviews, content] = await Promise.all([
-    getPublicStats(),
+  const [reviews, content] = await Promise.all([
     getDailyPublicReviews(),
     getPublishedContent(),
   ]);
@@ -44,11 +42,7 @@ export default async function Home() {
         </div>
       ) : null}
       <main id="main-content">
-        <Hero
-          stats={stats}
-          content={content["homepage.hero"]}
-          tickerContent={content["homepage.activity_ticker"]}
-        />
+        <Hero content={content["homepage.hero"]} />
         <HowItWorks content={content["homepage.how_it_works"]} />
         {reviewSettings?.visible === false ? null : (
           <ReviewsCarousel reviews={reviews} />

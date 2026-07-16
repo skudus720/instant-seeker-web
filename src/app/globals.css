@@ -119,17 +119,47 @@ a {
   pointer-events: none;
 }
 
+.canva-hero {
+  background:
+    radial-gradient(
+      50rem 30rem at 88% 18%,
+      rgba(255, 202, 39, 0.09),
+      transparent 58%
+    ),
+    radial-gradient(
+      40rem 24rem at 8% 88%,
+      rgba(255, 202, 39, 0.045),
+      transparent 55%
+    ),
+    var(--ink);
+}
+
+.auth-surface {
+  background:
+    radial-gradient(
+      60rem 36rem at 85% 15%,
+      rgba(255, 202, 39, 0.08),
+      transparent 55%
+    ),
+    radial-gradient(
+      48rem 28rem at 10% 90%,
+      rgba(255, 202, 39, 0.05),
+      transparent 50%
+    ),
+    var(--ink);
+}
+
 .auth-surface::after {
   position: absolute;
   right: -12rem;
   bottom: -18rem;
   width: 42rem;
   height: 42rem;
-  border: 1px solid rgba(255, 202, 39, 0.08);
+  border: 1px solid rgba(255, 202, 39, 0.1);
   border-radius: 50%;
   content: "";
   box-shadow:
-    0 0 0 5rem rgba(255, 202, 39, 0.018),
+    0 0 0 5rem rgba(255, 202, 39, 0.02),
     0 0 0 11rem rgba(255, 255, 255, 0.012);
   pointer-events: none;
 }
@@ -138,8 +168,9 @@ a {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(120deg, black, transparent 68%);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(120deg, black, transparent 72%);
+  opacity: 0.85;
 }
 
 .auth-scan-line {

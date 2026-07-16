@@ -14,7 +14,7 @@ export default function SignupPage() {
     <AuthShell
       mode="signup"
       title="Create your account"
-      description={`Set up your private workspace, then complete the one-time ${formatCurrency(appConfig.signupFeeAmount, appConfig.signupFeeCurrency)} access payment.`}
+      description={`Set up your private workspace, pay once with Mobile Money (${formatCurrency(appConfig.signupFeeAmount, appConfig.signupFeeCurrency)}), then start analysing match screenshots.`}
     >
       <AuthForm
         mode="signup"
