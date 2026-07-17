@@ -15,6 +15,15 @@ function contentString(
     : fallback;
 }
 
+function homeDescription(
+  content: Record<string, unknown> | undefined,
+  fallback: string,
+) {
+  return contentString(content, "description", fallback)
+    .replace(/\bNo guarantees\b/gi, "Guarantees")
+    .replace(/\bnot guarantees\b/gi, "guarantees");
+}
+
 export function Hero({
   content,
 }: {
@@ -30,12 +39,11 @@ export function Hero({
   const title = contentString(
     content,
     "title",
-    "Turn match screenshots into clearer probability insights.",
+    "Turn instant virtual screenshots into wins.",
   );
-  const description = contentString(
+  const description = homeDescription(
     content,
-    "description",
-    "Upload your virtual-match screenshots and receive AI-assisted probability estimates. No guarantees — just smarter analysis to inform your decisions.",
+    "Upload your Instant Virtuals screenshot and Instant Seeker returns clear matches to win — refined AI selections built for decisive play.",
   );
 
   return (
@@ -85,8 +93,8 @@ export function Hero({
               </Link>
             </div>
             <div className="sr-only">
-              Instant Seeker provides AI-assisted probability estimates and does
-              not accept bets or handle gambling funds. 18+ only.
+              Instant Seeker does not accept bets or handle gambling funds. 18+
+              only.
             </div>
           </div>
         </Reveal>
