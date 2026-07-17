@@ -39,11 +39,11 @@ export function Hero({
   const title = contentString(
     content,
     "title",
-    "Turn instant virtual screenshots into wins.",
+    "Turn instant virtual screenshots into winsßß.",
   );
   const description = homeDescription(
     content,
-    "Upload your Instant Virtuals screenshot and Instant Seeker returns clear matches to win — refined AI selections built for decisive play.",
+    "Upload your Sportybet Instant Virtuals screenshot and Instant Seeker Hacks the prediction system to returnßclear matches to win — refined AI selections built for decisive play.",
   );
 
   return (
